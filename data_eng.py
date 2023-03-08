@@ -12,13 +12,15 @@ def main():
 
     with open(input_dir, "r") as f:
         for line in f:
-            ""
-            # data = line.split(";")
-            # filename = data[0] + '_' + data[1] + '_' + data[2] + '_merged.tif'
+            data = line.split(";")
 
-            # new_data = [filename]
-            # new_data.extend(data)
-            # output.write(";".join(new_data))
+            filename = data[0]
+            filename = filename[:-11] + '_GFP.tif'
+
+            if os.path.isfile(os.path.join("data", "GFP", filename)):
+                new_data = [filename]
+                new_data.extend(data[1:])
+                output.write(";".join(new_data))
             
 
             # gfp = ["gfp"]

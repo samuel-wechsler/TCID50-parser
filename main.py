@@ -41,6 +41,11 @@ def main():
 
 
 def load_data(data_dir, classficiations):
+    """
+    This function loads data from a data directory and their corresponding classficications
+    from a given text file.
+    The function the returns both lists in a tuple.
+    """
     images = []
     labels = []
 
@@ -84,6 +89,7 @@ def get_model():
             ),
             # Max-pooling layer
             tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
+            tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
 
             # Flatten units
             tf.keras.layers.Flatten(),
@@ -97,7 +103,7 @@ def get_model():
             tf.keras.layers.Dense(2, activation="softmax")
         ]
     )
-
+    
     print(model.summary())
 
     # Train neural net
