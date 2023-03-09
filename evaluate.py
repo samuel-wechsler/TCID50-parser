@@ -1,5 +1,11 @@
-import numpy as np
-from decimal import Decimal
+"""
+evalute.py
+
+This python module is used to evaluate fluorescence images of cell cultures using a convolutional
+neural network. Based on the classification (infected / not-infected) the Tissue-Culture-Infective-
+Dose-50% (TCID50) can be calculated.
+"""
+
 
 def spear_karb(plate, d_0, d, c_0):
     """
@@ -39,7 +45,7 @@ def find_x0(plate):
     return row0
         
 plate = [
-    [1, 1, 1, 1, 1, 1, 0, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
     [1, 1, 1, 1, 1, 1, 0, 1],
     [1, 1, 1, 1, 0, 1, 1, 0],
     [0, 1, 0, 1, 1, 0, 1, 0],
