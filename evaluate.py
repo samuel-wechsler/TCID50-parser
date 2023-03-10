@@ -7,21 +7,51 @@ Dose-50% (TCID50) can be calculated.
 """
 
 import os
+import numpy as np
 
-def parse_plates(day, cell, data_dir):
-    coords = []
+import tensorflow as tf
 
-    for filename in os.listdir(data_dir):
-        if (day in filename) and (cell in filename):
-            # parse column and row
-            row_col = filename.split('_')[2]
-            col = row_col[:1]
-            row = row_col[1:]
-            coords.append((row, col))
-    
-    return coords
+IMG_WIDTH = 256
+IMG_HEIGHT = 256
 
-parse_plates("day3", "Hep2", "data/merge")
+# Create a function to import an image and resize it to be able to be used with our model
+def load_and_prep_image(filename, img_shape=256):
+  """
+  Reads an image from filename, turns it into a tensor
+  and reshapes it to (img_shape, img_shape, colour_channel).
+  """
+  # Read in target file (an image)
+  img = tf.io.read_file(filename)
+
+  # Decode the read file into a tensor & ensure 3 colour channels 
+  # (our model is trained on images with 3 colour channels and sometimes images have 4 colour channels)
+  img = tf.image.decode_image(img, channels=3)
+
+  # Resize the image (to the same size our model was trained on)
+  img = tf.image.resize(img, size = [img_shape, img_shape])
+  img = tf.expand_dims(img, axis=0)
+
+  return img
+
+class_names = ["infected", "not infected"]
+model = tf.keras.models.load_model("gfp_model")
+pred = model.predict(load_and_prep_image("data/GFP/Hep2_day7_E4_GFP.png"))
+pred_class = class_names[int(tf.round(pred)[0][0])]
+print(pred_class)
+
+def evaluate_plate(plate, data_dir):
+    model = tf.keras.models.load_model("gfp_model")
+    eval_plate = []
+
+    for row in plate:
+        eval_row =[]
+        for file in row:
+            # parse image as ndarray
+            im = load_and_prep_image(os.path.join(data_dir, file))
+            res = model.predict(im)
+            eval_row.append(res)
+            
+    return eval_plate
 
 def spear_karb(plate, d, d_0):
     """
@@ -90,6 +120,6 @@ plate = [
     [0, 0, 0, 0],
 ]
 
-res = spear_karb(plate, 1, -1)
+# res = spear_karb(plate, 1, -1)
 
-print('%.2E' % res)
+# print('%.2E' % res)

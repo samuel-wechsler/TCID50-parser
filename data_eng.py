@@ -1,36 +1,38 @@
 import os
 import sys
+import shutil
+
+from PIL import Image
 
 def main():
-    if len(sys.argv) != 3:
-        sys.exit("Usage: python parse.py input/dir output/dir")
+    if len(sys.argv) not in [4, 5]:
+        sys.exit("Usage: python data_eng.py input/dir output/dir function")
 
     input_dir = sys.argv[1]
     output_dir = sys.argv[2]
 
-    output = open(output_dir, "w")
-
-    with open(input_dir, "r") as f:
-        for line in f:
-            data = line.split(";")
-
-            filename = data[0]
-            filename = filename[:-11] + '_GFP.tif'
-
-            if os.path.isfile(os.path.join("data", "GFP", filename)):
-                new_data = [filename]
-                new_data.extend(data[1:])
-                output.write(";".join(new_data))
+    if sys.argv[3] == "parse":
+        parse_files(input_dir, output_dir)
             
 
-            # gfp = ["gfp"]
-            # gfp.extend(data)
+def parse_files(input_dir, output_dir, filetype="png"):
 
-            # merge = ["merge"]
-            # merge.extend(data)
+    for filename in os.listdir(input_dir):
+        if filename in [".DS_Store"]:
+            continue
+        src = os.path.join(input_dir, filename)
 
-            # output.write(";".join(gfp))
-            # output.write(";".join(merge))
+        if "merge" in filename:
+            dst = os.path.join(output_dir, "merge", filename.split('.')[0] + '.' + filetype)
+        
+        elif "GFP" in filename:
+            dst = os.path.join(output_dir, "GFP", filename.split('.')[0] + '.' + filetype)
+
+        elif "PhaseContrast" in filename:
+            dst = os.path.join(output_dir, "PhaseContrast", filename.split('.')[0] + '.' + filetype)
+        
+        im = Image.open(src)
+        im.save(dst)
 
 if __name__ == "__main__":
     main()
