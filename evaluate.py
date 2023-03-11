@@ -58,10 +58,9 @@ def load_and_prep_image(filename, img_shape=256):
   img = tf.io.read_file(filename)
 
   # Decode the read file into a tensor & ensure 3 colour channels 
-  # (our model is trained on images with 3 colour channels and sometimes images have 4 colour channels)
   img = tf.image.decode_image(img, channels=3)
 
-  # Resize the image (to the same size our model was trained on)
+  # Resize the image
   img = tf.image.resize(img, size = [img_shape, img_shape])
   img = tf.expand_dims(img, axis=0)
 
