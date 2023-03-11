@@ -33,11 +33,25 @@ def load_and_prep_image(filename, img_shape=256):
 
   return img
 
+def evaluate(dir, model, classnames=[1,0]):
+    """
+    This function evaluates (i.e. predicts) the infection state of an image with
+    a directory 'dir' and using a certain model and returns the most likely 
+    prediction class.
+    """
+    # load image and get a prediction
+    prediction = model.predict(load_and_prep_image(dir))
+    # return most likely class of prediction
+    return classnames[int(tf.round(prediction)[0][0])]
+
+# defines classifications
 class_names = ["infected", "not infected"]
+# load model
 model = tf.keras.models.load_model("gfp_model")
-pred = model.predict(load_and_prep_image("data/GFP/Hep2_day7_E4_GFP.png"))
-pred_class = class_names[int(tf.round(pred)[0][0])]
-print(pred_class)
+
+state = evaluate("data/GFP/A549_day3_D11_GFP.png", model, class_names)
+
+print(state)
 
 def evaluate_plate(plate, data_dir):
     model = tf.keras.models.load_model("gfp_model")
