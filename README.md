@@ -25,7 +25,7 @@ The code for this project is organized into four modules, which are located in t
 - evaluate.py: This module contains functions that can evaluate a fluorescence signal of a cell culture image and calculate the TCID50 of a well plate (represented by a matrix). This module uses functions to load images, preprocess them, and calculate the TCID50 values for the well plate.
 
 ## Contributing:
-We welcome contributions to this project! If you notice any bugs or have suggestions for new features, please create an issue on the GitHub repository. If you would like to contribute code, please fork the repository and submit a pull request with your changes.
+Contributions to this project are always welcome! If you notice any bugs or have suggestions for new features, please create an issue on the GitHub repository. If you would like to contribute code, please fork the repository and submit a pull request with your changes.
 
 ## License:
 This project is licensed under the MIT License. Please see the LICENSE file for more details.
