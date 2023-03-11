@@ -7,14 +7,48 @@ Dose-50% (TCID50) can be calculated.
 """
 
 import os
+import sys
 import numpy as np
+
+import matplotlib.pyplot as plt
+from PIL import Image
 
 import tensorflow as tf
 
 IMG_WIDTH = 256
 IMG_HEIGHT = 256
 
-# Create a function to import an image and resize it to be able to be used with our model
+
+def main():
+    commands = {"-help":None, "-evaluate": ("file", "model")}
+
+    if sys.argv[1] not in commands:
+        sys.exit("not a valid command: python evaluate.py -help")
+    
+    if "-help" in sys.argv:
+        print("See a list of all commands:")
+        for com in commands.keys():
+            if commands[com] is not None:
+                print(com, " ".join(list(commands[com])))
+            else:
+                print(com)
+    
+    elif "-evaluate" in sys.argv:
+        if len(sys.argv) != 4:
+            sys.exit("not a valid command: python evaluate.py -help")
+
+        src = sys.argv[2]
+        model = sys.argv[3]
+
+        if not(os.path.isfile(src)):
+            sys.exit("not a valid directory")
+        
+        print("loading model...")
+        model = tf.keras.models.load_model(model)
+
+        state = evaluate(src, model, classnames=["infected", "not infected"])
+        print(state)
+
 def load_and_prep_image(filename, img_shape=256):
   """
   Reads an image from filename, turns it into a tensor
@@ -44,14 +78,14 @@ def evaluate(dir, model, classnames=[1,0]):
     # return most likely class of prediction
     return classnames[int(tf.round(prediction)[0][0])]
 
-# defines classifications
-class_names = ["infected", "not infected"]
-# load model
-model = tf.keras.models.load_model("gfp_model")
+# # defines classifications
+# class_names = ["infected", "not infected"]
+# # load model
+# model = tf.keras.models.load_model("gfp_model")
 
-state = evaluate("data/GFP/A549_day3_D11_GFP.png", model, class_names)
+# state = evaluate("data/GFP/A549_day3_D11_GFP.png", model, class_names)
 
-print(state)
+# print(state)
 
 def evaluate_plate(plate, data_dir):
     model = tf.keras.models.load_model("gfp_model")
@@ -137,3 +171,6 @@ plate = [
 # res = spear_karb(plate, 1, -1)
 
 # print('%.2E' % res)
+
+if __name__ == "__main__":
+    main()
