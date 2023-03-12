@@ -1,7 +1,7 @@
 # TCID50-parser
 
 ## Overview:
-This GitHub repository contains the code for a project that aims to automate the process of evaluating fluorescence signals in cell cultures to calculate the TCID50 of an endpoint dilution assay. This project is intended to help researchers and scientists to save time and effort in manually performing these calculations, and to improve the accuracy and consistency of the results.
+This GitHub repository contains the code for a project that aims to automate the process of evaluating fluorescence signals in cell cultures to calculate the TCID50 of an endpoint dilution assay.
 
 ## Getting Started:
 To use this project, you will need to have Python 3.6 or higher installed on your computer. Additionally, you will need to install the required Python packages, which are listed in the "requirements.txt" file.
