@@ -47,7 +47,7 @@ def main():
         model = tf.keras.models.load_model(model)
 
         state = evaluate(src, model, classnames=["infected", "not infected"])
-        print(state)
+        print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
 def load_and_prep_image(filename, img_shape=256):
   """
@@ -75,7 +75,7 @@ def evaluate(dir, model, classnames=[1,0]):
     # load image and get a prediction
     prediction = model.predict(load_and_prep_image(dir))
     # return most likely class of prediction
-    return classnames[int(tf.round(prediction)[0][0])]
+    return classnames[int(tf.round(prediction)[0][0])], max(prediction[0])
 
 # # defines classifications
 # class_names = ["infected", "not infected"]
