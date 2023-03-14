@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 
 from data_pipe import *
 
-IMG_WIDTH = 128
-IMG_HEIGHT = 128
+IMG_WIDTH = 256
+IMG_HEIGHT = 256
 TEST_SIZE = 0.2
 EPOCHS = 10
 
@@ -147,7 +147,7 @@ def plot_model(history, test, model, dir=""):
     fig.legend(lines, labels, loc="upper right", frameon=False)
 
     # set end result as text
-    ax2.text(1.3 * EPOCHS, 0.5 * max(train_loss), f"Result after training: \naccuracy = {round(test[1]*100)}%")
+    ax2.text(1.3 * EPOCHS, 0.5 * max(train_loss), f"Result after training: \naccuracy = {round(test[1]*100, 2)}%")
 
     # Adjusting the sub-plots
     plt.subplots_adjust(right=0.7)
