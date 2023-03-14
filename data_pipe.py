@@ -1,0 +1,219 @@
+"""
+data_pipe.py
+
+This python module contains functions that are used to load image data
+"""
+
+import os
+import sys
+
+import tensorflow as tf
+import cv2
+from PIL import Image
+from skimage.io import imread, imsave
+from skimage import exposure
+
+from train_test import IMG_HEIGHT, IMG_WIDTH
+
+
+def main():
+    if len(sys.argv) not in [4, 5]:
+        sys.exit("Usage: python datapipe.py -function input/dir output/dir")
+
+    input_dir = sys.argv[1]
+    output_dir = sys.argv[2]
+
+    if sys.argv[3] == "parse":
+        parse_files(input_dir, output_dir)
+
+def load_and_prep_image(filename, img_shape=128):
+  """
+  Reads an image from filename, turns it into a tensor
+  and reshapes it to (img_shape, img_shape, colour_channel).
+  """
+  # Read in target file (an image)
+  img = tf.io.read_file(filename)
+
+  # Decode the read file into a tensor & ensure 3 colour channels 
+  img = tf.image.decode_image(img, channels=3)
+
+  # Resize the image
+  img = tf.image.resize(img, size = [img_shape, img_shape])
+  img = tf.expand_dims(img, axis=0)
+
+  return img
+
+
+def load_data(data_dir):
+    """
+    This function loads data from a data directory and their corresponding classficications
+    from a given text file.
+    The function the returns both lists in a tuple.
+    """
+    # certain files and directory that aren't loaded
+    skip = ['.DS_Store', '.DS_S_i.png', 
+            'P1_37_ICV_MC_1_GFP.png', 'P1_37_ICV_MC_2_GFP.png', 'P1_37_ICV_MC_3_GFP.png', 
+            'P1_37_ICV_MC_4_GFP.png', 'P1_37_ICV_MC_5_GFP.png', 'P1_37_ICV_MC_6_GFP.png', 
+            'P1_37_ICV_MC_7_GFP.png', 'P1_37_ICV_MC_8_GFP.png', 'datasets/Laloli_et_all2022_raw_images',
+            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']
+    
+    images = []
+    labels = []
+
+    # walk through all files in a directory
+    for dirpath, dirnames, filenames in os.walk(data_dir):
+    
+        for filename in filenames:
+            # ignore files that don't exist, are in the skip list, or who's directory is in the skip list
+            if (not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip])) is False:  
+                
+                # get path of file
+                path = os.path.join(dirpath, filename)
+
+                # parse label
+                label = 0 if 'ni' in filename else 1
+                labels.append(label)
+
+                # parse image as ndarray
+                im = cv2.imread(path)
+
+                # resize image
+                resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
+                images.append(resizeIM)
+
+                print("parsing file ", label)
+
+    return (images, labels)
+
+def load_data_old(data_dir, classficiations):
+    """
+    This function loads data from a data directory and their corresponding classficications
+    from a given text file.
+    The function the returns both lists in a tuple.
+    """
+    images = []
+    labels = []
+
+    with open(os.path.join(classficiations), 'r') as f:
+        for line in f:
+
+            # parse filename and path
+            data = line.split(';')
+            filename = data[0]
+            path = os.path.join(data_dir, filename)
+
+            if os.path.isfile(path):
+                print("parsing line ", line)
+            
+                # parse label
+                label = data[-1]
+                labels.append(label)
+
+                # parse image as ndarray
+                im = cv2.imread(path)
+
+                # resize image
+                resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
+                print(resizeIM.shape)
+                images.append(resizeIM)
+
+    return (images, labels)
+
+def parse_files(input_dir, output_dir, filetype="png"):
+    """
+    This function was used to parse all files from the 'Laloli_et_all2022_raw_images' dir
+    that belong to the "GFP"-category. 
+    """
+    # walk through a directory
+    for dirpath, dirnames, filenames in os.walk(input_dir):
+
+        for filename in filenames:
+
+            # check if file is GFP image
+            if filename.endswith('.tif') and "GFP" in filename:
+                
+                # parse filepath of image
+                src = os.path.join(dirpath, filename)
+
+                # parse new filename of image
+                paths = dirpath.split('/')
+                infos = [path.split('_') for path in paths]
+                meta = []
+                meta.extend(infos[2][-3:])
+                meta.extend(infos[3][-2:])
+                filename = "_".join(meta) + "_GFP." + filetype
+
+                dst = os.path.join(output_dir, filename)
+
+                print(f"converting {filename}")
+
+                # save image with lower brightness
+                image = imread(src)
+                image_dark = exposure.adjust_gamma(image, gamma=2,gain=1)
+                imsave(dst, image_dark)
+
+
+def parse_files_old(input_dir, output_dir, filetype="png"):
+    """
+    This function was used to parse all images from the matura dataset into
+    distinct categories (merge, gfp, phase contrast).
+    """
+    for filename in os.listdir(input_dir):
+        if filename in [".DS_Store"]:
+            continue
+        src = os.path.join(input_dir, filename)
+
+        if "merge" in filename:
+            dst = os.path.join(output_dir, "merge", filename.split('.')[0] + '.' + filetype)
+        
+        elif "GFP" in filename:
+            dst = os.path.join(output_dir, "GFP", filename.split('.')[0] + '.' + filetype)
+
+        elif "PhaseContrast" in filename:
+            dst = os.path.join(output_dir, "PhaseContrast", filename.split('.')[0] + '.' + filetype)
+        
+        im = Image.open(src)
+        im.save(dst)
+
+
+def adapt_filenames(input_dir):
+    """
+    This function was used to change filenames of Laloli dataset images s.t.
+    it reflects the infection state.
+    """
+    for dirpath, dirnames, filenames in os.walk(input_dir):
+        for filename in filenames:
+            old = os.path.join(dirpath, filename)
+            if 'M' in filename:
+                print(filename[:-4] + '_ni.png')
+                new = os.path.join(dirpath, filename[:-4] + '_ni.png')
+            else:
+                print(filename[:-4] + '_i.png')
+                new = os.path.join(dirpath, filename[:-4] + '_i.png')
+            
+            os.rename(old, new)
+
+def adapt_filenames_2(input_dir, classifications):
+    """
+    This function was used to change filenames of matura dataset images s.t.
+    it reflects the infection state.
+    """
+    with open(classifications, 'r') as f:
+        for line in f:
+            # separating parsed line
+            data = line.split(';')
+            
+            # parse filename
+            filename = data[0]
+            print(filename)
+            label = int(data[-1])
+
+            suffix = '_i.png' if label == 1 else '_ni.png'
+
+            old = os.path.join(input_dir, filename)
+            new = os.path.join(input_dir, filename[:-4] + suffix)
+
+            try:
+                os.rename(old, new)
+            except:
+                continue

@@ -1,10 +1,10 @@
 import sys
-import os
 import numpy as np
 
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
-import cv2
+
+from data_pipe import *
 
 IMG_WIDTH = 128
 IMG_HEIGHT = 128
@@ -38,82 +38,6 @@ def main():
         filename = sys.argv[2]
         model.save(filename)
         print(f"Model saved to {filename}.")
-
-
-def load_data_old(data_dir, classficiations):
-    """
-    This function loads data from a data directory and their corresponding classficications
-    from a given text file.
-    The function the returns both lists in a tuple.
-    """
-    images = []
-    labels = []
-
-    with open(os.path.join(classficiations), 'r') as f:
-        for line in f:
-            print("parsing line ", line)
-
-            # separating parsed line
-            data = line.split(';')
-            
-            # parse filename
-            filename = data[0]
-
-            path = os.path.join(data_dir, filename)
-
-            if not os.path.isfile(path):
-                continue
-
-            # parse label
-            label = data[-1]
-            labels.append(label)
-
-            # parse image as ndarray
-            im = cv2.imread(path)
-
-            # resize image
-            resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
-            print(resizeIM.shape)
-            images.append(resizeIM)
-
-    return (images, labels)
-
-def load_data(data_dir):
-    """
-    This function loads data from a data directory and their corresponding classficications
-    from a given text file.
-    The function the returns both lists in a tuple.
-    """
-    skip = ['.DS_Store', '.DS_S_i.png', 
-            'P1_37_ICV_MC_1_GFP.png', 'P1_37_ICV_MC_2_GFP.png', 'P1_37_ICV_MC_3_GFP.png', 
-            'P1_37_ICV_MC_4_GFP.png', 'P1_37_ICV_MC_5_GFP.png', 'P1_37_ICV_MC_6_GFP.png', 
-            'P1_37_ICV_MC_7_GFP.png', 'P1_37_ICV_MC_8_GFP.png', 'datasets/Laloli_et_all2022_raw_images',
-            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']
-    images = []
-    labels = []
-
-    for dirpath, dirnames, filenames in os.walk(data_dir):
-        for filename in filenames:
-
-            path = os.path.join(dirpath, filename)
-
-            if not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip]):
-                continue
-
-            # parse label
-            label = 0 if 'ni' in filename else 1
-            labels.append(label)
-
-            # parse image as ndarray
-            im = cv2.imread(path)
-
-            # resize image
-            resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
-            images.append(resizeIM)
-
-            print("parsing file ", label)
-
-    return (images, labels)
 
 
 def get_model():

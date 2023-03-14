@@ -15,8 +15,8 @@ from PIL import Image
 
 import tensorflow as tf
 
-IMG_WIDTH = 128
-IMG_HEIGHT = 128
+from train_test import IMG_HEIGHT, IMG_WIDTH
+from data_pipe import load_and_prep_image
 
 
 def main():
@@ -49,22 +49,6 @@ def main():
         state = evaluate(src, model, classnames=["infected", "not infected"])
         print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
-def load_and_prep_image(filename, img_shape=128):
-  """
-  Reads an image from filename, turns it into a tensor
-  and reshapes it to (img_shape, img_shape, colour_channel).
-  """
-  # Read in target file (an image)
-  img = tf.io.read_file(filename)
-
-  # Decode the read file into a tensor & ensure 3 colour channels 
-  img = tf.image.decode_image(img, channels=3)
-
-  # Resize the image
-  img = tf.image.resize(img, size = [img_shape, img_shape])
-  img = tf.expand_dims(img, axis=0)
-
-  return img
 
 def evaluate(dir, model, classnames=[1,0]):
     """
@@ -74,17 +58,10 @@ def evaluate(dir, model, classnames=[1,0]):
     """
     # load image and get a prediction
     prediction = model.predict(load_and_prep_image(dir))
+    
     # return most likely class of prediction
     return classnames[int(tf.round(prediction)[0][0])], max(prediction[0])
 
-# # defines classifications
-# class_names = ["infected", "not infected"]
-# # load model
-# model = tf.keras.models.load_model("gfp_model")
-
-# state = evaluate("data/GFP/A549_day3_D11_GFP.png", model, class_names)
-
-# print(state)
 
 def evaluate_plate(plate, data_dir):
     model = tf.keras.models.load_model("gfp_model")
