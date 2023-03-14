@@ -34,7 +34,7 @@ def main():
     # Evaluate neural network performance
     model.evaluate(x_test,  y_test, verbose=2)
 
-    if len(sys.argv) == 4:
+    if len(sys.argv) == 3:
         filename = sys.argv[2]
         model.save(filename)
         print(f"Model saved to {filename}.")
@@ -84,29 +84,34 @@ def load_data(data_dir):
     from a given text file.
     The function the returns both lists in a tuple.
     """
-    skip = ['.DS_Store'] 
+    skip = ['.DS_Store', '.DS_S_i.png', 
+            'P1_37_ICV_MC_1_GFP.png', 'P1_37_ICV_MC_2_GFP.png', 'P1_37_ICV_MC_3_GFP.png', 
+            'P1_37_ICV_MC_4_GFP.png', 'P1_37_ICV_MC_5_GFP.png', 'P1_37_ICV_MC_6_GFP.png', 
+            'P1_37_ICV_MC_7_GFP.png', 'P1_37_ICV_MC_8_GFP.png', 'datasets/Laloli_et_all2022_raw_images',
+            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']
     images = []
     labels = []
 
-    for filename in os.listdir(data_dir):
-        print("parsing file ", filename)
+    for dirpath, dirnames, filenames in os.walk(data_dir):
+        for filename in filenames:
 
-        path = os.path.join(data_dir, filename)
+            path = os.path.join(dirpath, filename)
 
-        if not os.path.isfile(path) or filename in skip:
-            continue
+            if not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip]):
+                continue
 
-        # parse label
-        label = 0 if 'M' in filename else 1
-        labels.append(label)
+            # parse label
+            label = 0 if 'ni' in filename else 1
+            labels.append(label)
 
-        # parse image as ndarray
-        im = cv2.imread(path)
+            # parse image as ndarray
+            im = cv2.imread(path)
 
-        # resize image
-        resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
-        print(resizeIM.shape)
-        images.append(resizeIM)
+            # resize image
+            resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
+            images.append(resizeIM)
+
+            print("parsing file ", label)
 
     return (images, labels)
 
@@ -136,6 +141,7 @@ def get_model():
             tf.keras.layers.Flatten(),
 
             # Add hidden layers with dropout
+            tf.keras.layers.Dense(128, activation="relu"),
             tf.keras.layers.Dense(128, activation="relu"),
             tf.keras.layers.Dropout(0.5),
 
