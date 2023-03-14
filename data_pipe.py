@@ -88,11 +88,11 @@ def load_data(data_dir):
     for dirpath, dirnames, filenames in os.walk(data_dir):
     
         for filename in filenames:
+            # get path of file
+            path = os.path.join(dirpath, filename)
+
             # ignore files that don't exist, are in the skip list, or who's directory is in the skip list
             if (not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip])) is False:  
-                
-                # get path of file
-                path = os.path.join(dirpath, filename)
 
                 # parse label
                 label = 0 if 'ni' in filename else 1
@@ -105,7 +105,7 @@ def load_data(data_dir):
                 resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
                 images.append(resizeIM)
 
-                print("parsing file ", label)
+                print(f"parsing file {filename} --> {label}")
 
     return (images, labels)
 
