@@ -15,8 +15,8 @@ from PIL import Image
 
 import tensorflow as tf
 
-IMG_WIDTH = 256
-IMG_HEIGHT = 256
+IMG_WIDTH = 128
+IMG_HEIGHT = 128
 
 
 def main():
@@ -49,7 +49,7 @@ def main():
         state = evaluate(src, model, classnames=["infected", "not infected"])
         print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
-def load_and_prep_image(filename, img_shape=256):
+def load_and_prep_image(filename, img_shape=128):
   """
   Reads an image from filename, turns it into a tensor
   and reshapes it to (img_shape, img_shape, colour_channel).

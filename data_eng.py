@@ -35,6 +35,47 @@ def parse_files_old(input_dir, output_dir, filetype="png"):
         im = Image.open(src)
         im.save(dst)
 
+
+def adapt_filenames(input_dir):
+    """
+    adapt filenames of laloli dataset
+    """
+    for dirpath, dirnames, filenames in os.walk(input_dir):
+        for filename in filenames:
+            old = os.path.join(dirpath, filename)
+            if 'M' in filename:
+                print(filename[:-4] + '_ni.png')
+                new = os.path.join(dirpath, filename[:-4] + '_ni.png')
+            else:
+                print(filename[:-4] + '_i.png')
+                new = os.path.join(dirpath, filename[:-4] + '_i.png')
+            
+            os.rename(old, new)
+
+def adapt_filenames_2(input_dir, classifications):
+
+    with open(classifications, 'r') as f:
+        for line in f:
+            # separating parsed line
+            data = line.split(';')
+            
+            # parse filename
+            filename = data[0]
+            print(filename)
+            label = int(data[-1])
+
+            suffix = '_i.png' if label == 1 else '_ni.png'
+
+            old = os.path.join(input_dir, filename)
+            new = os.path.join(input_dir, filename[:-4] + suffix)
+
+            try:
+                os.rename(old, new)
+            except:
+                continue
+
+adapt_filenames_2("datasets/matura_data/GFP", "classification_gfp.txt")
+
 def parse_files(input_dir, output_dir, filetype="png"):
 
     for dirpath, dirnames, filenames in os.walk(input_dir):
