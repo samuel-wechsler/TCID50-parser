@@ -13,18 +13,42 @@ from PIL import Image
 from skimage.io import imread, imsave
 from skimage import exposure
 
-from train_test import IMG_HEIGHT, IMG_WIDTH
-
+IMG_HEIGHT, IMG_WIDTH = 128, 128
 
 def main():
-    if len(sys.argv) not in [4, 5]:
-        sys.exit("Usage: python datapipe.py -function input/dir output/dir")
+    commands = {"-help" : None, 
+               "-parse": ("path/to/input/dir", "path/to/output/dir", "[filetype]")}
 
-    input_dir = sys.argv[1]
-    output_dir = sys.argv[2]
+    # check validity of command line argument
+    if len(sys.argv) >= 5:
+        sys.exit("not a valid command: python data_pipe.py -help")
 
-    if sys.argv[3] == "parse":
-        parse_files(input_dir, output_dir)
+    if sys.argv[1] == '-help':
+        # loop trhough and display all commands
+        print("See a list of all commands:")
+        for com in commands.keys():
+            if commands[com] is not None:
+                print(com, " ".join(list(commands[com])))
+            else:
+                print(com)
+
+    elif sys.argv[1] == '-parse':
+        if len(sys.argv) not in [4, 5]:
+            sys.exit("not a valid command: python data_pipe.py -help")
+        
+        input_dir = sys.argv[2]
+        output_dir = sys.argv[3]
+
+        # in case of optional filetype argument
+        if len(sys.argv) == 5:
+            parse_files(input_dir, output_dir, filetype=sys.argv[4])
+        else:
+            parse_files(input_dir, output_dir)
+
+    # again, check validity of command
+    else:
+        sys.exit("not a valid command: python data_pipe.py -help")
+
 
 def load_and_prep_image(filename, img_shape=128):
   """
@@ -217,3 +241,6 @@ def adapt_filenames_2(input_dir, classifications):
                 os.rename(old, new)
             except:
                 continue
+
+if __name__ == "__main__":
+    main()

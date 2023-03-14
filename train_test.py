@@ -13,7 +13,7 @@ EPOCHS = 10
 
 def main():
     if len(sys.argv) not in [3, 4]:
-        sys.exit("Usage: python test_train.py data_directory [model.h5]")
+        sys.exit("Usage: python train_test.py data_directory [model.h5]")
     
     # Get image arrays and labels for all images
     images, labels = load_data(sys.argv[1])
