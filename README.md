@@ -27,5 +27,10 @@ The code for this project is organized into four modules, which are located in t
 ## Contributing:
 Contributions to this project are always welcome! If you notice any bugs or have suggestions for new features, please create an issue on the GitHub repository. If you would like to contribute code, please fork the repository and submit a pull request with your changes.
 
+## Future Ideas
+- improve data normalization -> find automatic way of adjusting brightness / contrast level given some negative control such that fluorescent noise gets filtered.
+- implement K-fold cross-validation
+
+
 ## License:
 This project is licensed under the MIT License. Please see the LICENSE file for more details.
