@@ -6,6 +6,9 @@ This python module contains functions that are used to load image data
 
 import os
 import sys
+import shutil
+
+import pandas as pd
 
 import tensorflow as tf
 import cv2
@@ -75,11 +78,8 @@ def load_data(data_dir):
     The function the returns both lists in a tuple.
     """
     # certain files and directory that aren't loaded
-    skip = ['.DS_Store', '.DS_S_i.png', 
-            'P1_37_ICV_MC_1_GFP.png', 'P1_37_ICV_MC_2_GFP.png', 'P1_37_ICV_MC_3_GFP.png', 
-            'P1_37_ICV_MC_4_GFP.png', 'P1_37_ICV_MC_5_GFP.png', 'P1_37_ICV_MC_6_GFP.png', 
-            'P1_37_ICV_MC_7_GFP.png', 'P1_37_ICV_MC_8_GFP.png', 'datasets/Laloli_et_all2022_raw_images',
-            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']
+    skip = ['.DS_Store', '.DS_S_i.png', 'Session',
+            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast'] # 'datasets/Laloli_et_all2022_raw_images',
     
     images = []
     labels = []
@@ -95,7 +95,7 @@ def load_data(data_dir):
             if (not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip])) is False:  
 
                 # parse label
-                label = 0 if 'ni' in filename else 1
+                label = 0 if 'not_infected' in dirpath else 1
                 labels.append(label)
 
                 # parse image as ndarray
@@ -142,6 +142,37 @@ def load_data_old(data_dir, classficiations):
                 images.append(resizeIM)
 
     return (images, labels)
+
+def load_data_df(data_dir):
+    """
+    This function loads
+    """
+    # certain files and directory that aren't loaded
+    skip = ['.DS_Store', '.DS_S_i.png',
+            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']
+    
+    files = []
+    labels = []
+
+    # walk through all files in a directory
+    for dirpath, dirnames, filenames in os.walk(data_dir):
+    
+        for filename in filenames:
+            # get path of file
+            path = os.path.join(dirpath, filename)
+
+            # ignore files that don't exist, are in the skip list, or who's directory is in the skip list
+            if (not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip])) is False:  
+
+                # parse label
+                label = "not infected" if 'ni' in filename else "infected"
+                labels.append(label)
+
+                files.append(os.path.join(dirpath, filename))
+    
+    # df = pd.DataFrame(list(zip(files, labels)), columns=["filenames", "labels"])
+    return files, labels
+
 
 def parse_files(input_dir, output_dir, filetype="png"):
     """
@@ -241,6 +272,40 @@ def adapt_filenames_2(input_dir, classifications):
                 os.rename(old, new)
             except:
                 continue
+
+def adapt_filenames_3(input_dir, filetype="png"):
+    infected = os.listdir("datasets/Laloli_et_all2022_png/infected")
+    not_infected = os.listdir("datasets/Laloli_et_all2022_png/not_infected")
+
+    for dirpath, dirnames, filenames in os.walk(input_dir):
+        for filename in filenames:
+
+            # check if file is GFP image
+            if filename.endswith('.tif') and "GFP" in filename:
+                
+                # parse filepath of image
+                src = os.path.join(dirpath, filename)
+
+                # parse new filename of image
+                paths = dirpath.split('/')
+                infos = [path.split('_') for path in paths]
+                meta = []
+                meta.extend(infos[2][-3:])
+                meta.extend(infos[3][-2:])
+                filename = "_".join(meta) + "_GFP." + filetype
+
+                if 'M' not in filename:
+                    print(f"{filename} infected")
+                    dst = os.path.join(input_dir, "infected", filename)
+                else:
+                    print(f"{filename} not infected")
+                    dst = os.path.join(input_dir, "not_infected", filename)
+                
+                shutil.move(src, dst)
+
+
+adapt_filenames_3("datasets/Laloli_et_all2022_raw_images")
+
 
 if __name__ == "__main__":
     main()
