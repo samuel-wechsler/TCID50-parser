@@ -15,9 +15,9 @@ from PIL import Image
 
 import tensorflow as tf
 
-from train_test import IMG_HEIGHT, IMG_WIDTH
 from data_pipe import load_and_prep_image
 
+IMG_HEIGHT, IMG_WIDTH = (256, 256)
 
 def main():
     commands = {"-help":None, "-evaluate": ("file", "model")}
