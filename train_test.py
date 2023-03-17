@@ -19,33 +19,36 @@ IMG_HEIGHT = 256
 TEST_SIZE = 0.2
 EPOCHS = 10
 
+
 def main():
-    commands = {"-help":None,
-                "-train":("data_directory", "[model.h5]"),
-                "-test":("model", "data_directory")}
+    commands = {"-help": None,
+                "-train": ("data_directory", "[model.h5]"),
+                "-test": ("model", "data_directory")}
 
     if len(sys.argv) >= 5:
-        sys.exit("Usage: python train_test.py -train data_directory [model.h5]")
-    
+        sys.exit(
+            "Usage: python train_test.py -train data_directory [model.h5]")
+
     elif sys.argv[1] == "-train":
         # Get image arrays and labels for all images
         images, labels = load_data(sys.argv[2])
         filename = sys.argv[3] if len(sys.argv) == 4 else None
 
         train_model(labels, images, filename=filename)
-        
+
         # train_model(images, labels, filename)
         # accuracy, loss = train_kfold_vc(train_data, sys.argv[1], save_dir='kf_vc')
         # plot_model_kf_vc(accuracy, loss, "k-fold cross validation")
         # train_data = load_data_df(sys.argv[1])
-    
+
     elif sys.argv[1] == "-test":
         model = sys.argv[2]
         data_dir = sys.argv[3]
 
         accuracy, true_p, true_n = test_model(model, data_dir)
 
-        print(f"accuracy: {accuracy}, true positive: {true_p}, true_negative: {true_n}")
+        print(
+            f"accuracy: {accuracy}, true positive: {true_p}, true_negative: {true_n}")
 
 
 def train_model(labels, images, filename=None):
@@ -77,12 +80,13 @@ def train_model(labels, images, filename=None):
         model.save(filename)
         print(f"Model saved to {filename}.")
 
+
 def train_kfold_vc(train_data, data_dir, save_dir=''):
     """
-    
+
     """
     validation_accuracy = []
-    validation_loss =  []
+    validation_loss = []
 
     fold_var = 1
 
@@ -99,9 +103,7 @@ def train_kfold_vc(train_data, data_dir, save_dir=''):
                              zoom_range=0.3,
                              fill_mode='nearest',
                              horizontal_flip=True)
-    
 
-    
     for train_index, val_index in kf.split(np.zeros(len(Y)), Y):
 
         training_data = train_data.iloc[train_index]
@@ -112,35 +114,35 @@ def train_kfold_vc(train_data, data_dir, save_dir=''):
 
         train_data_generator = idg.flow_from_dataframe(training_data,
                                                        x_col='filenames', y_col='labels',
-                                                       target_size=(IMG_HEIGHT, IMG_WIDTH),
+                                                       target_size=(
+                                                           IMG_HEIGHT, IMG_WIDTH),
                                                        class_mode='binary', shuffle=True,
                                                        validate_filenames=False)
-
 
         valid_data_generator = idg.flow_from_dataframe(validation_data,
                                                        x_col='filenames', y_col='labels',
-                                                       target_size=(IMG_HEIGHT, IMG_WIDTH),
+                                                       target_size=(
+                                                           IMG_HEIGHT, IMG_WIDTH),
                                                        class_mode='binary', shuffle=True,
                                                        validate_filenames=False)
 
-        
         model = get_model()
 
         checkpoint = tf.keras.callbacks.ModelCheckpoint(f"{save_dir}/model_{fold_var}.h5",
                                                         monitor='val_accuracy', verbose=1,
                                                         save_best_only=True, mode='max')
-        
+
         callbacks_list = [checkpoint]
 
         history = model.fit(train_data_generator,
                             epochs=EPOCHS,
                             callbacks=callbacks_list,
                             validation_data=valid_data_generator)
-        
+
         model.load_weights(f"{save_dir}/model_{fold_var}.h5")
-        
+
         results = model.evaluate(valid_data_generator)
-        results = dict(zip(model.metrics_names,results))
+        results = dict(zip(model.metrics_names, results))
 
         validation_accuracy.append(results['accuracy'])
         validation_accuracy.append(results['loss'])
@@ -148,8 +150,9 @@ def train_kfold_vc(train_data, data_dir, save_dir=''):
         tf.keras.backend.clear_session()
 
         fold_var += 1
-    
-    return validation_accuracy, validation_loss
+
+    # return validation_accuracy, validation_loss
+    raise NotImplementedError
 
 
 def get_model():
@@ -166,22 +169,25 @@ def get_model():
             tf.keras.layers.Rescaling(1./255),
 
             # Perform convolution and pooling three times
-            tf.keras.layers.Conv2D(32, (3,3), activation="relu"),
-            tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
-            tf.keras.layers.Conv2D(64, (3,3), activation="relu", input_shape=(IMG_HEIGHT,IMG_WIDTH,3)),
-            tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
-            tf.keras.layers.Conv2D(64, (3,3), activation="relu"),
-            tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
+            tf.keras.layers.Conv2D(32, (3, 3), activation="relu"),
+            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+            tf.keras.layers.Conv2D(
+                64, (3, 3), activation="relu", input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+            tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
             tf.keras.layers.BatchNormalization(),
-            tf.keras.layers.Conv2D(64, (3,3), activation="relu"),
-            tf.keras.layers.MaxPooling2D(pool_size=(2,2)),
+            tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
 
             # Flatten units
             tf.keras.layers.Flatten(),
 
             # Add hidden layers with dropout
-            tf.keras.layers.Dense(512, activation="relu"),
-            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dense(256, activation="relu"),
+            tf.keras.layers.Dense(256, activation="relu"),
+            tf.keras.layers.Dense(128, activation="relu"),
+            tf.keras.layers.Dropout(0.5),
 
             # Add an output layer with output units for all 2 categories
             tf.keras.layers.Dense(2, activation="sigmoid")
@@ -196,6 +202,7 @@ def get_model():
     )
 
     return model
+
 
 def test_model(model, data_dir):
     """
@@ -212,12 +219,17 @@ def test_model(model, data_dir):
     actual_negatives = 0
 
     mistakes = []
+    low_confidence = []
 
     filenames, labels = load_data_df(data_dir)
 
     for filename, label in zip(filenames, labels):
-        print(filename, label)
-        prediction = evaluate(filename, model)[0]
+        result = evaluate(filename, model)
+        prediction = result[0]
+        confidence = result[1]
+
+        if confidence < 0.55:
+            low_confidence.append(filename)
 
         if label == "infected":
             actual_positives += 1
@@ -225,19 +237,24 @@ def test_model(model, data_dir):
                 predicted_positives += 1
             else:
                 mistakes.append(filename)
-        
+
         else:
             actual_negatives += 1
             if prediction == 0:
                 predicted_negatives += 1
             else:
                 mistakes.append(filename)
-    
-    accuracy = (predicted_positives + predicted_negatives) / (actual_positives + actual_negatives)
+
+    accuracy = (predicted_positives + predicted_negatives) / \
+        (actual_positives + actual_negatives)
     true_positive = predicted_positives / actual_positives
     true_negative = predicted_negatives / actual_negatives
 
+    print(f"\n\nSee low confidence:")
+    for low in low_confidence:
+        print(low)
 
+    print(f"\n\nSee mistakes:")
     for mistake in mistakes:
         print(mistake)
 
@@ -271,10 +288,12 @@ def plot_model(history, test, model, dir=""):
     fig.tight_layout(pad=3.0)
 
     # plot data
-    ax1.scatter(nb_epochs, train_accuracy, color="blue", label='training accuracy')
-    ax1.plot(nb_epochs, test_accuracy, color='black', linestyle='dashed', label='test')
+    ax1.scatter(nb_epochs, train_accuracy,
+                color="blue", label='training accuracy')
+    ax1.plot(nb_epochs, test_accuracy, color='black',
+             linestyle='dashed', label='test')
 
-    ax2.scatter(nb_epochs, train_loss, color = "red", label='training loss')
+    ax2.scatter(nb_epochs, train_loss, color="red", label='training loss')
     ax2.plot(nb_epochs, test_loss, color='black', linestyle='dashed')
 
     # set tick params
@@ -300,7 +319,8 @@ def plot_model(history, test, model, dir=""):
     fig.legend(lines, labels, loc="upper right", frameon=False)
 
     # set end result as text
-    ax2.text(1.3 * EPOCHS, 0.5 * max(train_loss), f"Result after training: \naccuracy = {round(test[1]*100, 2)}%")
+    ax2.text(1.3 * EPOCHS, 0.5 * max(train_loss),
+             f"Result after training: \naccuracy = {round(test[1]*100, 2)}%")
 
     # Adjusting the sub-plots
     plt.subplots_adjust(right=0.7)
@@ -310,10 +330,13 @@ def plot_model(history, test, model, dir=""):
     filename = os.path.join("accuracy_plots", model + "_" + date + ".png")
     fig.savefig(filename, bbox_inches='tight', dpi=400)
 
+
 def plot_model_kf_vc(accuracy, loss, model, dir=""):
     """
     This function plots the accuracy and loss of a model with respect
     to training epochs.
+
+    Not implemented
     """
     # epoch list
     nb_epochs = list(range(1, EPOCHS+1))
@@ -365,6 +388,7 @@ def plot_model_kf_vc(accuracy, loss, model, dir=""):
     date = datetime.now().strftime("%Y%m%d%H%M%S")
     filename = os.path.join("accuracy_plots", model + "_" + date + ".png")
     fig.savefig(filename, bbox_inches='tight', dpi=400)
+
 
 if __name__ == "__main__":
     main()
