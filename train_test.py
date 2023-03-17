@@ -25,9 +25,17 @@ def main():
                 "-train": ("data_directory", "[model.h5]"),
                 "-test": ("model", "data_directory")}
 
-    if len(sys.argv) >= 5:
-        sys.exit(
-            "Usage: python train_test.py -train data_directory [model.h5]")
+    if sys.argv[1] not in commands.keys():
+        sys.exit("not a valid command: python evaluate.py -help")
+
+    if sys.argv[1] == '-help':
+        # loop trhough and display all commands
+        print("See a list of all commands:")
+        for com in commands.keys():
+            if commands[com] is not None:
+                print(com, " ".join(list(commands[com])))
+            else:
+                print(com)
 
     elif sys.argv[1] == "-train":
         # Get image arrays and labels for all images
@@ -168,7 +176,7 @@ def get_model():
             # Rescale pixel values
             tf.keras.layers.Rescaling(1./255),
 
-            # Perform convolution and pooling three times
+            # Perform convolution and pooling five times
             tf.keras.layers.Conv2D(
                 32, (3, 3), activation="relu", input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
