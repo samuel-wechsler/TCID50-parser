@@ -169,14 +169,15 @@ def get_model():
             tf.keras.layers.Rescaling(1./255),
 
             # Perform convolution and pooling three times
-            tf.keras.layers.Conv2D(32, (3, 3), activation="relu"),
-            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
             tf.keras.layers.Conv2D(
-                64, (3, 3), activation="relu", input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+                32, (3, 3), activation="relu", input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
             tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-            tf.keras.layers.BatchNormalization(),
+            tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+            tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
             tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
 
@@ -184,10 +185,8 @@ def get_model():
             tf.keras.layers.Flatten(),
 
             # Add hidden layers with dropout
-            tf.keras.layers.Dense(256, activation="relu"),
-            tf.keras.layers.Dense(256, activation="relu"),
-            tf.keras.layers.Dense(128, activation="relu"),
-            tf.keras.layers.Dropout(0.5),
+            tf.keras.layers.Dense(512, activation="relu"),
+            tf.keras.layers.Dropout(0.3),
 
             # Add an output layer with output units for all 2 categories
             tf.keras.layers.Dense(2, activation="sigmoid")
@@ -196,7 +195,7 @@ def get_model():
 
     # Train neural net
     model.compile(
-        optimizer=RMSprop(learning_rate=0.001),
+        optimizer="adam",
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
