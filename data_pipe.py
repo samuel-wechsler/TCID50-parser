@@ -217,8 +217,36 @@ def parse_files_wbns(input_dir, output_dir, filetype="tif"):
                 tif.imsave(dst, image, bigtiff=False)
 
 
-parse_files_wbns("datasets/Laloli_et_all2022_raw_images",
-                 "datasets/Laloli_et_all2022_wbns_png")
+def replace_filetype(data_dir, old, new):
+    """
+    This function changes all images filetypes in data_dir from old to new and deletes
+    the old image (!).
+    """
+
+    # walk through a directory
+    for dirpath, dirnames, filenames in os.walk(data_dir):
+
+        for filename in filenames:
+            if filename.endswith(old):
+                # load image
+                src = os.path.join(dirpath, filename)
+                image = Image.open(src)
+
+                # parse new filename and dst path
+                new_filename = filename.replace(old, "") + new
+                dst = os.path.join(dirpath, new_filename)
+
+                print(src)
+                print(dst)
+
+                # save image
+                image.save(dst)
+
+                # delete old one
+                os.remove(src)
+
+
+replace_filetype("datasets/Laloli_et_all2022_wbns_png", "tif", "png")
 
 if __name__ == "__main__":
     main()
