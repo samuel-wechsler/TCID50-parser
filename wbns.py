@@ -28,7 +28,7 @@ from skimage import io
 import os
 
 # insert resolution in units of pixels (FWHM of the PSF)
-resolution_px = 4
+resolution_px = 10
 # insert the noise level. If resolution_px > 6 then noise_lvl = 2 may be better
 noise_lvl = 1  # default = 1
 
@@ -59,14 +59,19 @@ def wavelet_based_BG_subtraction(image, num_levels, noise_lvl):
     return Background, Noise, BG_unfiltered
 
 
-def wbns(file_path, filename, save_dir):
+def wbns(file_path):
+    """
+    This function returns the output of the Wavelet-based Background Subtraction
+    algorithm in a numpy array.
+    """
+
     # number of levels for background estimate
     num_levels = np.uint16(np.ceil(np.log2(resolution_px)))
 
     # read image file adjust shape if neccessary (padding) and plot
-    image = io.imread(os.path.join(file_path, filename))
+    image = io.imread(file_path)
     img_type = image.dtype
-    print(img_type.name)
+    # print(img_type.name)
     image = np.array(image, dtype='float32')
 
     #image = np.array(io.imread(os.path.join(data_dir, file)),dtype = 'float32')
@@ -114,8 +119,5 @@ def wbns(file_path, filename, save_dir):
 
     # save result
     result = np.asarray(result, dtype=img_type.name)
-    tif.imsave(os.path.join(save_dir, filename), result, bigtiff=False)
 
-
-wbns("datasets/Laloli_et_all2022_raw_images/not_infected/H1_33_ICV_MC_1_GFP.tif",
-     "", "test_wbns.tif")
+    return result
