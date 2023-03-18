@@ -7,38 +7,65 @@ categories.
 
 import os
 import sys
-from PIL import Image
+import cv2
+
 
 def main():
-    
+
     # check command-line arguments
     if len(sys.argv) != 3:
         sys.exit("Usage: python classify.oy data/dir output_file")
 
-    dst_dir = sys.argv[1]
-    output = open(sys.argv[2])
+    data_dir = sys.argv[1]
+    output = open(sys.argv[2], 'a')
+    files = open(sys.argv[2], 'r').readlines()
+    files = [f.split(';')[0].replace('\n', '') for f in files]
 
-    # loop through all files
-    for file in os.listdir(dst_dir):
-        data = file.split("_")[:-1]
+    print(files)
 
-        # show image
-        img = Image.open(os.path.join(dst_dir, file))
-        img.show()
+    # walk through a directory
+    for dirpath, dirnames, filenames in os.walk(data_dir):
 
-        # ask for classification 
-        classification = input(f"{file}: infected? (0 / 1): ")
+        for file in filenames:
+            file = file.replace("._", "")
+            fp = os.path.join(dirpath, file)
 
-        # check that input is valid
-        while classification not in ["0", "1"]:
-            classification = input(f"{file}: infected? (0 / 1): ")
+            if fp in files:
+                print("skipped: ", fp)
 
-        # close file again
-        img.close()
+            elif file.endswith('tif') and ("GFP" in file or "CY5" in file):
 
-        # add classification data to txt file
-        data.append(classification)
-        output.write(";".join(data) + "\n")
+                try:
+                    # show image
+                    img = cv2.imread(fp)
+                    cv2.imshow("image", img)
+
+                    # waits for user to press any key
+                    # (this is necessary to avoid Python kernel form crashing)
+                    cv2.waitKey(0)
+
+                    # closing all open windows
+                    cv2.destroyAllWindows()
+
+                except Exception as e:
+                    print("Error: ", e)
+                    print("File: ", fp)
+
+                    ans = input("Continue ? (y/n) : ")
+                    while ans != "y":
+                        ans = input("Continue ? (y/n) : ")
+                    continue
+
+                # ask for classification
+                classification = input(f"{file}: infected? (0 / 1): ")
+
+                # check that input is valid
+                while classification not in ["0", "1"]:
+                    classification = input(f"{file}: infected? (0 / 1): ")
+
+                # add classification data to txt file
+                line = f"{fp};{classification}\n"
+                output.write(line)
 
 
 if __name__ == "__main__":
