@@ -183,7 +183,7 @@ def load_data_df(data_dir):
             if (not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip])) is False:
 
                 # parse label
-                label = "not infected" if 'ni' in filename else "infected"
+                label = "not infected" if 'not_infected' in dirpath else "infected"
                 labels.append(label)
 
                 files.append(os.path.join(dirpath, filename))
