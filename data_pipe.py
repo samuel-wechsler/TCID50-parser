@@ -1,7 +1,12 @@
 """
 data_pipe.py
 
-This python module contains functions that are used to load image data
+The data_pipe module contains functions for loading image data and
+preparing them for use in a machine learning model. The functions
+in this module can be used to load images from a directory or a file,
+resize them, and return them in the form of tensors. The module also
+contains a command-line interface that allows users to specify the 
+input and output directories for the image files.
 """
 
 import os
@@ -11,6 +16,7 @@ import shutil
 import pandas as pd
 
 import tensorflow as tf
+import tensorflow_io as tfio
 import cv2
 from PIL import Image
 import tifffile as tif
@@ -23,6 +29,10 @@ IMG_HEIGHT, IMG_WIDTH = 128, 128
 
 
 def main():
+    """
+    This function is the entry point for the command-line interface.
+    """
+
     commands = {"-help": None,
                 "-parse": ("path/to/input/dir", "path/to/output/dir", "[filetype]")}
 
@@ -59,14 +69,18 @@ def main():
 
 def load_and_prep_image(filename, img_shape=128):
     """
-    Reads an image from filename, turns it into a tensor
-    and reshapes it to (img_shape, img_shape, colour_channel).
+    This function reads an image from a file, turns it into a
+    tensor and resizes it to a specific shape.
     """
     # Read in target file (an image)
     img = tf.io.read_file(filename)
 
     # Decode the read file into a tensor & ensure 3 colour channels
-    img = tf.image.decode_image(img, channels=3)
+    if filename.endswith("tif"):
+        img = tfio.experimental.image.decode_tiff(img)
+        img = tfio.experimental.color.rgba_to_rgb(img)
+    else:
+        img = tf.image.decode_image(img, channels=3)
 
     # Resize the image
     img = tf.image.resize(img, size=[img_shape, img_shape])
@@ -81,6 +95,7 @@ def load_data_v1(data_dir):
     from a given data_dir and resizes them and then resizes the images. The labels and the
     corresponding image data are returned in two lists.
     """
+
     # certain files and directory that aren't loaded
     skip = ['.DS_Store', '.DS_S_i.png', 'Session',
             'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']  # 'datasets/Laloli_et_all2022_raw_images',
@@ -120,6 +135,7 @@ def load_data_v2(class_file):
     from a given data_dir and resizes them and then resizes the images. The labels and the
     corresponding image data are returned in two lists.
     """
+
     # certain files and directory that aren't loaded
     skip = ['.DS_Store', '.DS_S_i.png', 'Session',
             'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']  # 'datasets/Laloli_et_all2022_raw_images',
@@ -261,6 +277,30 @@ def parse_files_wbns(input_dir, output_dir, filetype="tif"):
 
                 image = wbns(src)
                 tif.imsave(dst, image, bigtiff=False)
+
+
+def parse_file_from_class(class_file, ouput_dir):
+    """
+    This function copies all images listed in a classifications.txt file into the
+    output directory and subfolders "infected" or "not_infected" depending on
+    their labels.
+    """
+    # read classifications.txt
+    class_file = open(class_file, 'r')
+
+    for line in class_file:
+        # parse source file path and label
+        data = line.replace("\n", "").split(';')
+        src = data[0]
+        label = "infected" if data[1] == "1" else "not_infected"
+
+        # parse destination directory
+        filename = os.path.basename(src)
+        dst = os.path.join(ouput_dir, label, filename)
+
+        # copy image file into dst directory
+        print(f"parsing {filename}")
+        shutil.copy(src, dst)
 
 
 def replace_filetype(data_dir, old, new):
