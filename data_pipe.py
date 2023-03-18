@@ -75,7 +75,7 @@ def load_and_prep_image(filename, img_shape=128):
     return img
 
 
-def load_data(data_dir):
+def load_data_v1(data_dir):
     """
     This function loads the images from a data directory and their corresponding classficications
     from a given data_dir and resizes them and then resizes the images. The labels and the
@@ -110,6 +110,52 @@ def load_data(data_dir):
                 images.append(resizeIM)
 
                 print(f"parsing file {filename} --> {label}")
+
+    return (images, labels)
+
+
+def load_data_v2(class_file):
+    """
+    This function loads the images from a data directory and their corresponding classficications
+    from a given data_dir and resizes them and then resizes the images. The labels and the
+    corresponding image data are returned in two lists.
+    """
+    # certain files and directory that aren't loaded
+    skip = ['.DS_Store', '.DS_S_i.png', 'Session',
+            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast']  # 'datasets/Laloli_et_all2022_raw_images',
+
+    images = []
+    labels = []
+
+    seen = []
+
+    with open(class_file, 'r') as f:
+        c = 0
+
+        for line in f:
+            entries = line.split(';')
+            path = entries[0]
+            label = entries[1]
+
+            # ignore files that don't exist, are in the skip list, who's directory is in the skip list or don't have the filetype png
+            if (os.path.isfile(path) or path.endswith('tif')) and path not in seen:
+
+                # parse label
+                labels.append(label)
+
+                # parse image as ndarray
+                im = cv2.imread(path)
+
+                # resize image
+                resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
+                images.append(resizeIM)
+
+                seen.append(path)
+
+                c += 1
+
+                if c % 100 == 0:
+                    print(f"{c} files parsed")
 
     return (images, labels)
 
