@@ -22,11 +22,11 @@ EPOCHS = 10
 
 def main():
     commands = {"-help": None,
-                "-train": ("data_directory", "[model.h5]"),
+                "-train": ("classfile", "[model.h5]"),
                 "-test": ("model", "data_directory")}
 
     if sys.argv[1] not in commands.keys():
-        sys.exit("not a valid command: python evaluate.py -help")
+        sys.exit("not a valid command: python train_test.py -help")
 
     if sys.argv[1] == '-help':
         # loop trhough and display all commands
@@ -39,7 +39,8 @@ def main():
 
     elif sys.argv[1] == "-train":
         # Get image arrays and labels for all images
-        images, labels = load_data(sys.argv[2])
+        images, labels = load_data_v2(sys.argv[2])
+
         filename = sys.argv[3] if len(sys.argv) == 4 else None
 
         train_model(labels, images, filename=filename)
@@ -66,7 +67,7 @@ def train_model(labels, images, filename=None):
     are plotted.
     """
     # Split data into training and testing sets
-    labels = tf.keras.utils.to_categorical(labels)
+    labels = tf.keras.utils.to_categorical(labels, num_classes=2)
 
     x_train, x_test, y_train, y_test = train_test_split(
         np.array(images), np.array(labels), test_size=TEST_SIZE
