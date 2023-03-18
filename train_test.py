@@ -21,6 +21,13 @@ EPOCHS = 10
 
 
 def main():
+    """
+    This function is the entry point for the train_test.py script. It parses the
+    command line arguments to determine whether the user wants to train a model
+    or test a trained model.
+    """
+
+    # define valid commands
     commands = {"-help": None,
                 "-train": ("classfile", "[model.h5]"),
                 "-test": ("model", "data_directory")}
@@ -62,9 +69,18 @@ def main():
 
 def train_model(labels, images, filename=None):
     """
-    This function trains a model simply by splitting all loaded data into a training and
-    testing set. The resulting training accuracies and losses as well as the end result 
-    are plotted.
+    This function trains a convolutional neural network on a set of
+    labeled images. It takes as input the image labels and pixel arrays, 
+    which are assumed to have the same length.
+
+    It first converts the integer labels to a one-hot encoding and then splits
+    the data into training and testing sets. It creates a new convolutional 
+    neural network using the get_model() function and trains it on the training
+    data using the RMSprop optimizer. 
+
+    After training is complete, it evaluates the model on the testing data and
+    plots the accuracy and loss over the course of training. If a filename is
+    provided, the trained model is saved to disk.
     """
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels, num_classes=2)
