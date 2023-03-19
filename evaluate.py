@@ -71,7 +71,7 @@ def evaluate(dir, model, classnames=[1, 0]):
     It returns a tuple containing the predicted class name and the maximum prediction value.
     """
     # load image and get a prediction
-    prediction = model.predict(load_and_prep_image(dir))
+    prediction = model.predict(load_and_prep_image(dir), verbose=2)
 
     # return most likely class of prediction
     return classnames[int(tf.round(prediction)[0][0])], max(prediction[0])
@@ -87,19 +87,46 @@ def evaluate_plate(plate, model):
     model: A TensorFlow Keras model to be used for prediction.
     """
 
-    eval_plate = []
+    outputs = []
 
     for row in plate:
         eval_row = []
         for file in row:
             res = evaluate(file, model)[0]
             eval_row.append(res)
-        eval_plate.append(eval_row)
+        outputs.append(eval_row)
 
-    return eval_plate
+    return outputs
 
 
-def get_plates(data_dir, col_range, row_range):
+def evaluate_plates(data_dir, row_range, col_range, model_path):
+    """
+    This function evaluates all plates that are located in data_dir.
+    """
+    print("loading model...")
+    model = tf.keras.models.load_model(model_path)
+
+    for plate_path in os.listdir(data_dir):
+        if "docx" in plate_path:
+            continue
+
+        # work around for weird bug
+        plate_path = plate_path.replace("._", "")
+        filepath = os.path.join(data_dir, plate_path)
+
+        plate = get_plates(filepath, row_range, col_range)
+
+        plate = evaluate_plate(plate, model)
+
+        titer = spear_karb(plate, 1, -1)
+
+        display_plate(plate)
+        save_plate(plate, row_range, col_range,
+                   save_dir=f"evaluated_plates/{plate_path}_{row_range}_{col_range}_{'%.2E' % titer}.png")
+        print('%.2E' % titer)
+
+
+def get_plates(data_dir, row_range, col_range):
     """
     This function returns a matrix containing file paths to image files 
     from a directory containing file paths to image files. 
@@ -228,7 +255,7 @@ def spear_karb(plate, d, d_0):
         d_0 += 0.5
 
     # find fully infected row with greatest dilution
-    row0 = find_x0(plate)
+    row0 = most_diluted(plate)
 
     # calculate the log10 concentration of the first fully infected row
     x_0 = d_0 - (row0) * d
@@ -248,7 +275,7 @@ def spear_karb(plate, d, d_0):
     return 10 ** -((x_0 + d/2 - d * s) + d_0)
 
 
-def find_x0(plate):
+def most_diluted(plate):
     """
     This function finds the most diluted row in the plate matrix
     that's still fullyinfected and returns the index of that row 
@@ -263,60 +290,9 @@ def find_x0(plate):
     return row0
 
 
-plate = [
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 1, 1, 1, 1, 1, 1, 0],
-    [1, 1, 1, 1, 1, 1, 0, 0],
-    [1, 1, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0]
-]
-
-# plate = [
-#     [1, 1, 1, 1],
-#     [1, 1, 1, 1],
-#     [1, 1, 1, 1],
-#     [1, 1, 1, 1],
-#     [1, 1, 1, 1],
-#     [1, 1, 1, 1],
-#     [1, 1, 1, 1],
-#     [1, 1, 1, 0],
-#     [1, 0, 0, 0],
-#     [0, 0, 0, 0],
-# ]
-
-# # res = spear_karb(plate, 1, -1)
-
-# t1 = datetime.now()
-
-# model = tf.keras.models.load_model("trained_models/raw_model")
-# bp = "/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Timecourse"
-
-# plates = [plate for plate in os.listdir(bp) if 'docx' not in plate]
-# plates = sorted(plates, key=lambda x: int(x[-2:]))
-
-# for plate in plates:
-#     plate = plate.replace("._", "")
-
-#     print("\n\n ", plate)
-
-#     plate_1 = get_plates(os.path.join(bp, plate), [1, 6], ["A", "H"])
-#     plate_2 = get_plates(os.path.join(bp, plate), [7, 12], ["A", "H"])
-
-#     plate_1 = evaluate_plate(plate_1, model)
-#     plate_2 = evaluate_plate(plate_2, model)
-
-#     titer_1 = spear_karb(plate_1, 1, -1)
-#     titer_2 = spear_karb(plate_2, 1, -1)
-
-#     display_plate(plate_1)
-#     print('%.2E' % titer_1)
-
-#     display_plate(plate_2)
-#     print('%.2E' % titer_2)
-
-# t2 = datetime.now()
-
-# print("Finished in ", t2 - t1)
+evaluate_plates("/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Timecourse",
+                ["A", "H"], [1, 6],
+                "trained_models/raw_model")
 
 if __name__ == "__main__":
     main()
