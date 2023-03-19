@@ -1,18 +1,19 @@
+from evaluate import evaluate
+from data_pipe import *
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+from sklearn.model_selection import train_test_split, KFold
 import sys
 import numpy as np
 
 from datetime import datetime
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
+
 import tensorflow as tf
 from tensorflow.keras.optimizers.experimental import RMSprop
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from sklearn.model_selection import train_test_split, KFold
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-
-from data_pipe import *
-from evaluate import evaluate
 
 IMG_WIDTH = 256
 IMG_HEIGHT = 256
@@ -70,17 +71,8 @@ def main():
 def train_model(labels, images, filename=None):
     """
     This function trains a convolutional neural network on a set of
-    labeled images. It takes as input the image labels and pixel arrays, 
-    which are assumed to have the same length.
-
-    It first converts the integer labels to a one-hot encoding and then splits
-    the data into training and testing sets. It creates a new convolutional 
-    neural network using the get_model() function and trains it on the training
-    data using the RMSprop optimizer. 
-
-    After training is complete, it evaluates the model on the testing data and
-    plots the accuracy and loss over the course of training. If a filename is
-    provided, the trained model is saved to disk.
+    labeled images. It takes as input the image labels and pixel arrays
+    as well as an optional filename to save the trained model.
     """
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels, num_classes=2)

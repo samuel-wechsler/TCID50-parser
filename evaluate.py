@@ -13,6 +13,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
+print("importing tensorflow modules...")  # noqa
 import tensorflow as tf
 
 from data_pipe import load_and_prep_image
@@ -27,12 +29,13 @@ def main():
     commands provided.
     """
 
-    commands = {"-help": None, "-evaluate": ("file", "model")}
+    commands = {"-help": None,
+                "-evaluate": ("file_or_dir", "model", "output_dir")}
 
     if sys.argv[1] not in commands:
         sys.exit("not a valid command: python evaluate.py -help")
 
-    if "-help" in sys.argv:
+    if sys.argv[1] == "-help":
         print("See a list of all commands:")
         for com in commands.keys():
             if commands[com] is not None:
@@ -40,21 +43,33 @@ def main():
             else:
                 print(com)
 
-    elif "-evaluate" in sys.argv:
-        if len(sys.argv) != 4:
+    elif sys.argv[1] == "-evaluate":
+        if len(sys.argv) not in [4, 5]:
             sys.exit("not a valid command: python evaluate.py -help")
 
         src = sys.argv[2]
         model = sys.argv[3]
 
-        if not (os.path.isfile(src)):
-            sys.exit("not a valid directory")
+        if (os.path.isfile(src)):
+            print("loading model...")
+            model = tf.keras.models.load_model(model)
 
-        print("loading model...")
-        model = tf.keras.models.load_model(model)
+            state = evaluate(src, model,
+                             classnames=["infected", "not infected"])
+            print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
-        state = evaluate(src, model, classnames=["infected", "not infected"])
-        print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
+        elif os.path.isdir(src):
+            print("loading model...")
+            model = tf.keras.models.load_model(model)
+
+            row_range = [input("Enter first row (single letter): "),
+                         input("Enter last row (single letter): ")]
+
+            col_range = [int(input("Enter first column (integer): ")),
+                         int(input("Enter last column (integer): "))]
+
+            state = evaluate_plates(src, row_range, col_range, model)
+            print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
 
 def evaluate(dir, model, classnames=[1, 0]):
@@ -99,12 +114,10 @@ def evaluate_plate(plate, model):
     return outputs
 
 
-def evaluate_plates(data_dir, row_range, col_range, model_path):
+def evaluate_plates(data_dir, row_range, col_range, model):
     """
     This function evaluates all plates that are located in data_dir.
     """
-    print("loading model...")
-    model = tf.keras.models.load_model(model_path)
 
     for plate_path in os.listdir(data_dir):
         if "docx" in plate_path:
@@ -289,10 +302,6 @@ def most_diluted(plate):
             row0 = row
     return row0
 
-
-evaluate_plates("/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Timecourse",
-                ["A", "H"], [1, 6],
-                "trained_models/raw_model")
 
 if __name__ == "__main__":
     main()

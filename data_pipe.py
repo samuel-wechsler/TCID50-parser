@@ -8,22 +8,22 @@ resize them, and return them in the form of tensors. The module also
 contains a command-line interface that allows users to specify the 
 input and output directories for the image files.
 """
-
 import os
 import sys
 import shutil
 
-import pandas as pd
+from wbns import wbns
+from skimage import exposure
+from skimage.io import imread, imsave
+import tifffile as tif
+from PIL import Image
+import cv2
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
 import tensorflow as tf
 import tensorflow_io as tfio
-import cv2
-from PIL import Image
-import tifffile as tif
-from skimage.io import imread, imsave
-from skimage import exposure
 
-from wbns import wbns
+import pandas as pd
 
 IMG_HEIGHT, IMG_WIDTH = 128, 128
 
