@@ -5,18 +5,19 @@ import matplotlib as mpl
 from sklearn.model_selection import train_test_split, KFold
 import sys
 import numpy as np
+import pandas as pd
 
 from datetime import datetime
 
+# ignore tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
+tf.get_logger().setLevel('ERROR')  # noqa
 
 import tensorflow as tf
 from tensorflow.keras.optimizers.experimental import RMSprop
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
-IMG_WIDTH = 256
-IMG_HEIGHT = 256
 TEST_SIZE = 0.2
 EPOCHS = 10
 
@@ -53,11 +54,6 @@ def main():
 
         train_model(labels, images, filename=filename)
 
-        # train_model(images, labels, filename)
-        # accuracy, loss = train_kfold_vc(train_data, sys.argv[1], save_dir='kf_vc')
-        # plot_model_kf_vc(accuracy, loss, "k-fold cross validation")
-        # train_data = load_data_df(sys.argv[1])
-
     elif sys.argv[1] == "-test":
         model = sys.argv[2]
         data_dir = sys.argv[3]
@@ -66,6 +62,9 @@ def main():
 
         print(
             f"accuracy: {accuracy}, true positive: {true_p}, true_negative: {true_n}")
+
+    else:
+        sys.exit("not a valid command: python train_test.py -help")
 
 
 def train_model(labels, images, filename=None):
@@ -83,6 +82,10 @@ def train_model(labels, images, filename=None):
 
     # Get a compiled neural network
     model = get_model()
+
+    # print summary of the model
+    model.build((None, IMG_HEIGHT, IMG_WIDTH, 3))
+    print(model.summary(), "\n\n")
 
     # Fit model on training data
     history = model.fit(x_train, y_train, epochs=EPOCHS)
@@ -178,12 +181,19 @@ def get_model():
     `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
     The output layer should have `NUM_CATEGORIES` units, one for each category.
     """
+    # Data augmentation
+    data_augmentation = tf.keras.Sequential([
+        tf.keras.layers.RandomFlip("horizontal_and_vertical"),
+    ])
 
     # Create a convolutional neural network
     model = tf.keras.models.Sequential(
         [
-            # Rescale pixel values
+            # Normalize data
             tf.keras.layers.Rescaling(1./255),
+
+            # augment data
+            data_augmentation,
 
             # Perform convolution and pooling five times
             tf.keras.layers.Conv2D(
@@ -191,11 +201,9 @@ def get_model():
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
             tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-            tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+            tf.keras.layers.Conv2D(128, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-            tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
-            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-            tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
+            tf.keras.layers.Conv2D(256, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
 
             # Flatten units
@@ -203,7 +211,7 @@ def get_model():
 
             # Add hidden layers with dropout
             tf.keras.layers.Dense(512, activation="relu"),
-            tf.keras.layers.Dropout(0.3),
+            tf.keras.layers.Dropout(0.4),
 
             # Add an output layer with output units for all 2 categories
             tf.keras.layers.Dense(2, activation="sigmoid")
