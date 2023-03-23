@@ -18,6 +18,7 @@ print("importing tensorflow modules...")  # noqa
 import tensorflow as tf
 
 from data_pipe import load_and_prep_image
+from control import get_outlier_rows
 
 IMG_HEIGHT, IMG_WIDTH = (256, 256)
 
@@ -71,6 +72,9 @@ def main():
             state = evaluate_plates(src, row_range, col_range, model)
             print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
+        else:
+            sys.exit(f"no such file or directory: {src}")
+
 
 def evaluate(dir, model, classnames=[1, 0]):
     """
@@ -107,36 +111,12 @@ def evaluate_plate(plate, model):
     for row in plate:
         eval_row = []
         for file in row:
-            res = evaluate(file, model)[0]
+            prediction = evaluate(file, model)
+            res = prediction[0] if prediction[1] > 0.55 else 0.5
             eval_row.append(res)
         outputs.append(eval_row)
 
     return outputs
-
-
-def evaluate_plates(data_dir, row_range, col_range, model):
-    """
-    This function evaluates all plates that are located in data_dir.
-    """
-
-    for plate_path in os.listdir(data_dir):
-        if "docx" in plate_path:
-            continue
-
-        # work around for weird bug
-        plate_path = plate_path.replace("._", "")
-        filepath = os.path.join(data_dir, plate_path)
-
-        plate = get_plates(filepath, row_range, col_range)
-
-        plate = evaluate_plate(plate, model)
-
-        titer = spear_karb(plate, 1, -1)
-
-        display_plate(plate)
-        save_plate(plate, row_range, col_range,
-                   save_dir=f"evaluated_plates/{plate_path}_{row_range}_{col_range}_{'%.2E' % titer}.png")
-        print('%.2E' % titer)
 
 
 def get_plates(data_dir, row_range, col_range):
@@ -173,6 +153,33 @@ def get_plates(data_dir, row_range, col_range):
     return plate
 
 
+def evaluate_plates(data_dir, row_range, col_range, model):
+    """
+    This function evaluates all plates that are located in data_dir.
+    """
+
+    for plate_path in os.listdir(data_dir):
+        if "docx" in plate_path or '._' in plate_path:
+            continue
+
+        filepath = os.path.join(data_dir, plate_path)
+
+        plate = get_plates(filepath, row_range, col_range)
+
+        plate = evaluate_plate(plate, model)
+
+        titer = spear_karb(plate, 1, -1)
+        outlier_rows = get_outlier_rows(plate, titer, 10, 10, 35)
+
+        display_plate(plate)
+        rows = "".join(row_range)
+        cols = "".join([str(i) for i in col_range])
+
+        save_plate(plate,  titer, outlier_rows, row_range, col_range,
+                   save_dir=f"evaluated_plates/run2_outlier_det/{plate_path}{rows}_{cols}{'%.2E' % titer}.png")
+        print('%.2E' % titer)
+
+
 def display_plate(plate):
     """
     This function creates a terminal representation of a well plate where
@@ -193,7 +200,7 @@ def display_plate(plate):
     print("\n\n")
 
 
-def save_plate(plate, row_range, col_range, save_dir):
+def save_plate(plate, titer, outlier_rows, row_range, col_range, save_dir):
     """
     This function creates an illustrative png of a well plate an marks
     each infected well with a cross.
@@ -210,7 +217,7 @@ def save_plate(plate, row_range, col_range, save_dir):
 
     # Create a blank canvas
     img = Image.new("RGBA",
-                    ((nb_col + 1) * well_size,
+                    ((nb_col + 3) * well_size,
                      (nb_row + 1) * well_size)
                     )
 
@@ -218,6 +225,9 @@ def save_plate(plate, row_range, col_range, save_dir):
     draw = ImageDraw.Draw(img)
 
     for i in range(1, nb_row + 1):
+        # color is red if outlier, else white
+        color = "red" if (i-1) in outlier_rows else "white"
+
         # draw row letter
         draw.text((0, i * well_size),
                   row_range[i-1], fill="black", font=font)
@@ -234,8 +244,11 @@ def save_plate(plate, row_range, col_range, save_dir):
                      (i + 1) * well_size - well_border)
                     )
 
+            # purple if outlier
+            color = "purple" if plate[i-1][j-1] == 0.5 else "white"
+
             # draw a well
-            draw.rectangle(dims, fill="white", outline="black", width=3)
+            draw.rectangle(dims, fill=color, outline="black", width=3)
 
             # if infected, draw a cross
             if plate[i-1][j-1]:
@@ -246,6 +259,14 @@ def save_plate(plate, row_range, col_range, save_dir):
 
                 draw.line(cross[0], fill="black", width=3)
                 draw.line(cross[1], fill="black", width=3)
+
+    # draw titer
+    draw.text(((nb_col + 3) * well_size / 2,
+               ((nb_row + 1) * well_size)),
+              f"TCID50={titer}",
+              fill="black",
+              font=font
+              )
 
     img.save(save_dir)
 
