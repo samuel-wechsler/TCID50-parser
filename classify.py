@@ -27,10 +27,9 @@ def main():
     for dirpath, dirnames, filenames in os.walk(data_dir):
 
         for file in filenames:
-            file = file.replace("._", "")
             fp = os.path.join(dirpath, file)
 
-            if fp in files:
+            if fp in files or '._' in fp:
                 print("skipped: ", fp)
 
             elif file.endswith('tif') and ("GFP" in file or "CY5" in file):
