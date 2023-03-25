@@ -5,18 +5,18 @@ import matplotlib as mpl
 from sklearn.model_selection import train_test_split, KFold
 import sys
 import numpy as np
+import math
 import pandas as pd
 
 from datetime import datetime
 
 # ignore tensorflow warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
-tf.get_logger().setLevel('ERROR')  # noqa
 
 import tensorflow as tf
+tf.get_logger().setLevel('ERROR')  # noqa
 from tensorflow.keras.optimizers.experimental import RMSprop
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
 
 TEST_SIZE = 0.2
 EPOCHS = 10
@@ -32,12 +32,13 @@ def main():
     # define valid commands
     commands = {"-help": None,
                 "-train": ("classfile", "[model.h5]"),
-                "-test": ("model", "data_directory")}
+                "-test": ("model", "classfile"),
+                "-ece": ("model", "classfile")}
 
     if sys.argv[1] not in commands.keys():
         sys.exit("not a valid command: python train_test.py -help")
 
-    if sys.argv[1] == '-help':
+    elif sys.argv[1] == '-help':
         # loop trhough and display all commands
         print("See a list of all commands:")
         for com in commands.keys():
@@ -47,14 +48,16 @@ def main():
                 print(com)
 
     elif sys.argv[1] == "-train":
+
         # Get image arrays and labels for all images
-        images, labels = load_data_v2(sys.argv[2])
+        images, labels = load_data_v2(sys.argv[2], grayscale=True)
 
         filename = sys.argv[3] if len(sys.argv) == 4 else None
 
         train_model(labels, images, filename=filename)
 
     elif sys.argv[1] == "-test":
+
         model = sys.argv[2]
         data_dir = sys.argv[3]
 
@@ -62,6 +65,13 @@ def main():
 
         print(
             f"accuracy: {accuracy}, true positive: {true_p}, true_negative: {true_n}")
+
+    elif sys.argv[1] == '-ece':
+
+        model = sys.argv[2]
+        data_dir = sys.argv[3]
+
+        get_model_ece(model, data_dir)
 
     else:
         sys.exit("not a valid command: python train_test.py -help")
@@ -73,6 +83,7 @@ def train_model(labels, images, filename=None):
     labeled images. It takes as input the image labels and pixel arrays
     as well as an optional filename to save the trained model.
     """
+    print(images, labels)
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels, num_classes=2)
 
@@ -87,92 +98,16 @@ def train_model(labels, images, filename=None):
     model.build((None, IMG_HEIGHT, IMG_WIDTH, 3))
     print(model.summary(), "\n\n")
 
-    # Fit model on training data
-    history = model.fit(x_train, y_train, epochs=EPOCHS)
-
-    # Evaluate neural network performance
-    test = model.evaluate(x_test,  y_test, verbose=2)
+    # Fit and evaluate model on training data
+    history = model.fit(x_train, y_train, epochs=EPOCHS,
+                        validation_data=(x_test, y_test))
 
     # Plot assessment of model
-    plot_model(history, test, sys.argv[1].split('/')[-1])
+    plot_model(history, sys.argv[1].split('/')[-1])
 
     if filename is not None:
         model.save(filename)
         print(f"Model saved to {filename}.")
-
-
-def train_kfold_vc(train_data, data_dir, save_dir=''):
-    """
-
-    """
-    validation_accuracy = []
-    validation_loss = []
-
-    fold_var = 1
-
-    # shuffle train_data df
-    train_data = train_data.sample(frac=1).reset_index(drop=True)
-
-    # get dataframe of filenames and labels
-    Y = train_data[["labels"]]
-
-    kf = KFold(n_splits=5)
-
-    idg = ImageDataGenerator(width_shift_range=0.1,
-                             height_shift_range=0.1,
-                             zoom_range=0.3,
-                             fill_mode='nearest',
-                             horizontal_flip=True)
-
-    for train_index, val_index in kf.split(np.zeros(len(Y)), Y):
-
-        training_data = train_data.iloc[train_index]
-        validation_data = train_data.iloc[val_index]
-
-        print(training_data)
-        print(validation_data)
-
-        train_data_generator = idg.flow_from_dataframe(training_data,
-                                                       x_col='filenames', y_col='labels',
-                                                       target_size=(
-                                                           IMG_HEIGHT, IMG_WIDTH),
-                                                       class_mode='binary', shuffle=True,
-                                                       validate_filenames=False)
-
-        valid_data_generator = idg.flow_from_dataframe(validation_data,
-                                                       x_col='filenames', y_col='labels',
-                                                       target_size=(
-                                                           IMG_HEIGHT, IMG_WIDTH),
-                                                       class_mode='binary', shuffle=True,
-                                                       validate_filenames=False)
-
-        model = get_model()
-
-        checkpoint = tf.keras.callbacks.ModelCheckpoint(f"{save_dir}/model_{fold_var}.h5",
-                                                        monitor='val_accuracy', verbose=1,
-                                                        save_best_only=True, mode='max')
-
-        callbacks_list = [checkpoint]
-
-        history = model.fit(train_data_generator,
-                            epochs=EPOCHS,
-                            callbacks=callbacks_list,
-                            validation_data=valid_data_generator)
-
-        model.load_weights(f"{save_dir}/model_{fold_var}.h5")
-
-        results = model.evaluate(valid_data_generator)
-        results = dict(zip(model.metrics_names, results))
-
-        validation_accuracy.append(results['accuracy'])
-        validation_accuracy.append(results['loss'])
-
-        tf.keras.backend.clear_session()
-
-        fold_var += 1
-
-    # return validation_accuracy, validation_loss
-    raise NotImplementedError
 
 
 def get_model():
@@ -197,7 +132,7 @@ def get_model():
 
             # Perform convolution and pooling five times
             tf.keras.layers.Conv2D(
-                32, (3, 3), activation="relu", input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
+                32, (3, 3), activation="relu", input_shape=(IMG_HEIGHT, IMG_WIDTH, 1)),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
             tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
@@ -220,7 +155,7 @@ def get_model():
 
     # Train neural net
     model.compile(
-        optimizer="adam",
+        optimizer=RMSprop(learning_rate=0.0005),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -231,9 +166,10 @@ def get_model():
 def test_model(model, data_dir):
     """
     This function calculates the accuracy, true positive and true negative rate, evaluated
-    on data in 'data_dir'.
+    on all data specified in a classification text file.
     """
     # load model
+    print("loading model...")
     model = tf.keras.models.load_model(model)
 
     # variables to calculate rates
@@ -285,20 +221,46 @@ def test_model(model, data_dir):
     return accuracy, true_positive, true_negative
 
 
-def plot_model(history, test, model, dir=""):
+def get_model_ece(model, data_dir):
     """
-    This function plots the accuracy and loss of a model with respect
-    to training epochs.
+    This function calculates the expected calibration error (ECE).
     """
-    # epoch list
-    nb_epochs = list(range(1, EPOCHS+1))
+    # load model
+    print("loading model...")
+    model = tf.keras.models.load_model(model)
 
-    # parse data
-    train_accuracy = history.history["accuracy"]
-    train_loss = history.history["loss"]
+    inf_occurences = [0] * 10
+    not_inf_occurences = [0] * 10
 
-    test_accuracy = [test[1]] * EPOCHS
-    test_loss = [test[0]] * EPOCHS
+    filenames, labels = load_data_df(data_dir)
+
+    print(filenames)
+
+    for image in filenames:
+        # predict state of cell culture image
+        prediction = evaluate(image, model)
+        result = prediction[0]
+        confidence = prediction[1]
+
+        # calculate index in list
+        i = math.floor(10 * confidence) - 1
+
+        if result:
+            inf_occurences[i] += 1
+        else:
+            not_inf_occurences[i] += 1
+
+    # calculate probabilities
+    inf_fractions = [i / sum(inf_occurences) for i in inf_occurences]
+    not_inf_fractions = [i / sum(not_inf_occurences)
+                         for i in not_inf_occurences]
+
+    # plot results
+    plot_ece(inf_fractions, not_inf_fractions)
+
+
+def plot_ece(inf_fractions, not_inf_fractions):
+    probs = list(np.arange(0.1, 1.1, 0.1))
 
     # matplotlib settings
     mpl.rcParams['font.family'] = 'Avenir'
@@ -312,13 +274,77 @@ def plot_model(history, test, model, dir=""):
     fig.tight_layout(pad=3.0)
 
     # plot data
-    ax1.scatter(nb_epochs, train_accuracy,
-                color="blue", label='training accuracy')
-    ax1.plot(nb_epochs, test_accuracy, color='black',
-             linestyle='dashed', label='test')
+    ax1.plot(probs, probs, linestyle="dashed", linewidth=2, color='black')
+    ax1.plot(probs, inf_fractions, color='blue', marker='o')
 
-    ax2.scatter(nb_epochs, train_loss, color="red", label='training loss')
-    ax2.plot(nb_epochs, test_loss, color='black', linestyle='dashed')
+    ax2.plot(probs, probs, linestyle="dashed", linewidth=2, color='black')
+    ax2.plot(probs, not_inf_fractions, color='blue', marker='o')
+
+    # set tick params
+    ax1.tick_params(axis='x', labelsize=15)
+    ax1.tick_params(axis='y', labelsize=15)
+    ax2.tick_params(axis='x', labelsize=15)
+    ax2.tick_params(axis='y', labelsize=15)
+
+    # set title
+    ax1.set_title("ECE: positive")
+    ax2.set_title("ECE: negative")
+
+    # label axis
+    ax1.set_xlabel("probabilities", fontsize=15)
+    ax1.set_ylabel("fraction of positive", fontsize=15)
+
+    ax2.set_xlabel("probabilities", fontsize=15)
+    ax2.set_ylabel("fraction of negative", fontsize=15)
+
+    # plot legend
+    lines_labels = [ax.get_legend_handles_labels() for ax in fig.axes]
+    lines, labels = [sum(lol, []) for lol in zip(*lines_labels)]
+    fig.legend(lines, labels, loc="upper right", frameon=False)
+
+    # Adjusting the sub-plots
+    plt.subplots_adjust(right=0.7)
+
+    # save figure
+    date = datetime.now().strftime("%Y%m%d%H%M%S")
+    filename = os.path.join("ece_plots", date + ".png")
+    fig.savefig(filename, bbox_inches='tight', dpi=400)
+
+
+def plot_model(history, model, dir=""):
+    """
+    This function plots the accuracy and loss of a model with respect
+    to training epochs.
+    """
+    # epoch list
+    nb_epochs = list(range(1, EPOCHS+1))
+
+    # parse data
+    train_accuracy = history.history["accuracy"]
+    train_loss = history.history["loss"]
+
+    test_accuracy = history.history['val_accuracy']
+    test_loss = history.history['val_loss']
+
+    # matplotlib settings
+    mpl.rcParams['font.family'] = 'Avenir'
+    plt.rcParams['font.size'] = 18
+    plt.rcParams['axes.linewidth'] = 2
+
+    # big plots please...
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.8, 5))
+
+    # add padding
+    fig.tight_layout(pad=3.0)
+
+    # plot data
+    ax1.plot(nb_epochs, train_accuracy, color="blue",
+             marker='o', label='training')
+    ax1.plot(nb_epochs, test_accuracy, color='red',
+             marker='o', label='validation')
+
+    ax2.plot(nb_epochs, train_loss, marker='o', color="blue")
+    ax2.plot(nb_epochs, test_loss, marker='o', color='red')
 
     # set tick params
     ax1.tick_params(axis='x', labelsize=15)
@@ -344,7 +370,7 @@ def plot_model(history, test, model, dir=""):
 
     # set end result as text
     ax2.text(1.3 * EPOCHS, 0.5 * max(train_loss),
-             f"Result after training: \naccuracy = {round(test[1]*100, 2)}%")
+             f"Result after training: \naccuracy = {round(test_accuracy[-1]*100, 2)}%")
 
     # Adjusting the sub-plots
     plt.subplots_adjust(right=0.7)
