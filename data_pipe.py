@@ -9,8 +9,10 @@ contains a command-line interface that allows users to specify the
 input and output directories for the image files.
 """
 import os
+from pathlib import Path
 import sys
 import shutil
+import random
 
 from wbns import wbns
 from skimage import exposure
@@ -19,13 +21,14 @@ import tifffile as tif
 from PIL import Image
 import cv2
 
+print("importing tensorflow modules...")  # noqa
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
 import tensorflow as tf
 import tensorflow_io as tfio
 
 import pandas as pd
 
-IMG_HEIGHT, IMG_WIDTH = 128, 128
+IMG_HEIGHT, IMG_WIDTH = 300, 300
 
 
 def main():
@@ -129,7 +132,7 @@ def load_data_v1(data_dir):
     return (images, labels)
 
 
-def load_data_v2(class_file):
+def load_data_v2(class_file, grayscale=False):
     """
     This function loads the images from a data directory and their corresponding classficications
     from a given data_dir and resizes them and then resizes the images. The labels and the
@@ -153,8 +156,10 @@ def load_data_v2(class_file):
             path = entries[0]
             label = entries[1]
 
-            # ignore files that don't exist, are in the skip list, who's directory is in the skip list or don't have the filetype png
-            if (os.path.isfile(path) or path.endswith('tif')) and path not in seen:
+            # ignore files that don't exist, are in the skip list, who's directory is in the skip list
+            # or have ._ in their name
+            if os.path.isfile(path) and path not in seen and '._' not in path:
+                print(path)
 
                 # parse label
                 labels.append(label)
@@ -164,6 +169,8 @@ def load_data_v2(class_file):
 
                 # resize image
                 resizeIM = cv2.resize(im, (IMG_HEIGHT, IMG_WIDTH))
+                if grayscale:
+                    resizeIM = cv2.cvtColor(resizeIM, cv2.COLOR_BGR2GRAY)
                 images.append(resizeIM)
 
                 seen.append(path)
@@ -182,8 +189,7 @@ def load_data_df(data_dir):
     their paths and labels in two lists.
     """
     # certain files and directory that aren't loaded
-    skip = ['.DS_Store', '.DS_S_i.png',
-            'datasets/matura_data/merge', 'datasets/matura_data/PhaseContrast', 'Session']
+    skip = ['.DS_Store', '.DS_S_i.png', '._']
 
     files = []
     labels = []
@@ -196,9 +202,9 @@ def load_data_df(data_dir):
             path = os.path.join(dirpath, filename)
 
             # ignore files that don't exist, are in the skip list, or who's directory is in the skip list
-            if (not os.path.isfile(path) or filename in skip or any([ski in dirpath for ski in skip])) is False:
-
+            if (os.path.isfile(path)) and (filename not in skip) and (not any([frag in path for frag in skip])):
                 # parse label
+                print('._' in path)
                 label = "not infected" if 'not_infected' in dirpath else "infected"
                 labels.append(label)
 
@@ -206,6 +212,67 @@ def load_data_df(data_dir):
 
     # df = pd.DataFrame(list(zip(files, labels)), columns=["filenames", "labels"])
     return files, labels
+
+
+def load_fmd_data(data_dir):
+    """
+    This function returns two lists of noisy and denoised images (as ndarrays) that were
+    found in a given data directory.
+    """
+
+    # skip ground truth and raw data
+    skips = ["gt", "raw", '._']
+
+    # lists for noisy and denoised
+    noisy = []
+    denoised = []
+
+    t_c = 0
+
+    # walk through all files in a directory
+    for dirpath, dirnames, filenames in os.walk(data_dir):
+
+        # choose 4 random images
+        filenames = random.choices(filenames, k=4)
+        print(len(filenames))
+
+        for filename in filenames:
+            # get path of noisy image
+            noisy_path = os.path.join(dirpath, filename)
+
+            # only parse noisy files, skip others
+            if any([skip in noisy_path for skip in skips]) or not filename.endswith(".png"):
+                continue
+
+            if t_c > 500:
+                break
+
+            t_c += 1
+            print(f"{t_c} parsing {filename}")
+
+            # find ground truth (denoised) analogue
+            parent0 = Path(os.path.abspath(noisy_path)).parents[0]
+            parent2 = Path(os.path.abspath(noisy_path)).parents[2]
+            img_nb = os.path.basename(parent0)
+            img_dir = os.path.join(parent2, "gt", img_nb)
+            filename = [
+                png for png in os.listdir(img_dir) if png.endswith('.png')
+            ]
+            denoised_path = os.path.join(img_dir, filename[0])
+
+            # parse images as ndarray
+            noisy_im = cv2.imread(noisy_path)
+            denoised_im = cv2.imread(denoised_path)
+
+            # resize images
+            resize_noisy_im = cv2.resize(noisy_im, (IMG_HEIGHT, IMG_WIDTH))
+            resize_denoised_im = cv2.resize(denoised_im,
+                                            (IMG_HEIGHT, IMG_WIDTH))
+
+            noisy.append(resize_noisy_im)
+            denoised.append(resize_denoised_im)
+
+    return (noisy, denoised)
 
 
 def parse_files_gamma(input_dir, output_dir, filetype="png"):
