@@ -11,7 +11,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
 import tensorflow as tf
 from sklearn.model_selection import train_test_split
 
-IMG_HEIGHT, IMG_WIDTH = 300, 300
+IMG_HEIGHT, IMG_WIDTH = 900, 900
 TEST_SIZE = 0.2
 EPOCHS = 10
 
@@ -32,6 +32,7 @@ def get_model():
 
     e_conv3 = tf.keras.layers.Conv2D(16, (3, 3),
                                      activation='relu', padding='same')(batchnorm_2)
+
     h = tf.keras.layers.MaxPooling2D((2, 2), padding='same')(e_conv3)
 
     # Decoder

@@ -22,18 +22,25 @@ def prob_cpe(N_0, Q, D, d):
 def get_outlier_rows(plate, titer, D, D_0, Q):
     """
     This function returns all rows that are considered to be outliers (i.e., p<0.05).
+    D: serial dilution factor
+    D_0: initial dilution factor
+    Q: particle to pfu ratio
     """
     outlier_rows = []
     d = 1
+    Q *= 1.5
 
     for row in plate:
         # get probability of CPE
-        p = prob_cpe(titer*0.7, Q, D, d + np.log10(D_0))
+        p = prob_cpe(titer*0.7 * D_0, Q, D, d)
+
         # get probability of current row distribution
         r = binom.pmf(k=sum(row), n=len(row), p=p)
 
+        print("row ", row, " prob ", r, p)
+
         # if outlier, append row index
-        if r < 0.10:
+        if r < 0.05:
             outlier_rows.append(d-1)
         d += 1
 
