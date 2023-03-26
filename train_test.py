@@ -3,6 +3,8 @@ from data_pipe import *
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from sklearn.model_selection import train_test_split, KFold
+import argparse
+from pathvalidate.argparse import validate_filepath_arg
 import sys
 import numpy as np
 import math
@@ -29,52 +31,52 @@ def main():
     or test a trained model.
     """
 
-    # define valid commands
-    commands = {"-help": None,
-                "-train": ("classfile", "[model.h5]"),
-                "-test": ("model", "classfile"),
-                "-ece": ("model", "classfile")}
+    parser = argparse.ArgumentParser(
+        description="Train or test a neural net."
+    )
+    parser.add_argument("-f", "--function",  type=str,
+                        help="desired functionality of module", required=True,
+                        choices=["train", "test", "ece"])
 
-    if sys.argv[1] not in commands.keys():
-        sys.exit("not a valid command: python train_test.py -help")
+    parser.add_argument("-c", "--classfile", type=validate_filepath_arg,
+                        required=not ("-p" in sys.argv or "--path" in sys.argv) or "test" in sys.argv or "ece" in sys.argv)
 
-    elif sys.argv[1] == '-help':
-        # loop trhough and display all commands
-        print("See a list of all commands:")
-        for com in commands.keys():
-            if commands[com] is not None:
-                print(com, " ".join(list(commands[com])))
-            else:
-                print(com)
+    parser.add_argument("-p", "--path", type=check_dir_path,
+                        required=not ("-c" in sys.argv or "--classfile" in sys.argv))
 
-    elif sys.argv[1] == "-train":
+    parser.add_argument("-m", "--model", type=check_dir_path,
+                        required="test" in sys.argv or "ece" in sys.argv)
 
+    args = vars(parser.parse_args())
+
+    if args["function"] == "train":
         # Get image arrays and labels for all images
-        images, labels = load_data_v2(sys.argv[2], grayscale=True)
+        if args["classfile"] is not None:
+            images, labels = load_data_from_classfile(
+                class_file=args["classfile"])
+        else:
+            images, labels = load_data_from_dir(data_dir=args["path"])
 
-        filename = sys.argv[3] if len(sys.argv) == 4 else None
+        train_model(labels, images, filename=args["model"] or None)
 
-        train_model(labels, images, filename=filename)
-
-    elif sys.argv[1] == "-test":
-
-        model = sys.argv[2]
-        data_dir = sys.argv[3]
-
-        accuracy, true_p, true_n = test_model(model, data_dir)
-
+    elif args["function"] == "test":
+        accuracy, true_p, true_n = test_model(
+            model=args["model"], data_dir=args["classfile"] or args["path"]
+        )
         print(
             f"accuracy: {accuracy}, true positive: {true_p}, true_negative: {true_n}")
 
-    elif sys.argv[1] == '-ece':
+    elif args["function"] == "ece":
+        get_model_ece(model=args["model"],
+                      data_dir=args["classfile"] or args["path"])
 
-        model = sys.argv[2]
-        data_dir = sys.argv[3]
 
-        get_model_ece(model, data_dir)
-
+def check_dir_path(path):
+    if os.path.isdir(path):
+        return path
     else:
-        sys.exit("not a valid command: python train_test.py -help")
+        raise argparse.ArgumentTypeError(
+            f"readable_dir:{path} is not a valid path")
 
 
 def train_model(labels, images, filename=None):
@@ -83,7 +85,6 @@ def train_model(labels, images, filename=None):
     labeled images. It takes as input the image labels and pixel arrays
     as well as an optional filename to save the trained model.
     """
-    print(images, labels)
     # Split data into training and testing sets
     labels = tf.keras.utils.to_categorical(labels, num_classes=2)
 
@@ -163,7 +164,7 @@ def get_model():
     return model
 
 
-def test_model(model, data_dir):
+def test_model(data_dir, model_path):
     """
     This function calculates the accuracy, true positive and true negative rate, evaluated
     on all data specified in a classification text file.

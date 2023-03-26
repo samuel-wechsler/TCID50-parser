@@ -9,6 +9,8 @@ from datetime import datetime
 import os
 import sys
 import numpy as np
+import argparse
+from pathvalidate.argparse import validate_filepath_arg
 
 import matplotlib.pyplot as plt
 from PIL import Image, ImageDraw, ImageFont
@@ -23,66 +25,119 @@ from control import get_outlier_rows
 IMG_HEIGHT, IMG_WIDTH = (256, 256)
 
 
+# def main():
+#     """
+#     This function is the entry point of the program. It processes command
+#     line arguments and calls the appropriate function(s) based on the
+#     commands provided.
+#     """
+
+#     commands = {"-help": None,
+#                 "-evaluate": ("file_or_dir", "model", "output_dir")}
+
+#     if sys.argv[1] not in commands:
+#         sys.exit("not a valid command: python evaluate.py -help")
+
+#     if sys.argv[1] == "-help":
+#         print("See a list of all commands:")
+#         for com in commands.keys():
+#             if commands[com] is not None:
+#                 print(com, " ".join(list(commands[com])))
+#             else:
+#                 print(com)
+
+#     elif sys.argv[1] == "-evaluate":
+#         if len(sys.argv) not in [4, 5]:
+#             sys.exit("not a valid command: python evaluate.py -help")
+
+#         src = sys.argv[2]
+#         model = sys.argv[3]
+
+#         if (os.path.isfile(src)):
+#             print("loading model...")
+#             model = tf.keras.models.load_model(model)
+
+#             state = evaluate(src, model,
+#                              classnames=["infected", "not infected"])
+
+#             print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
+
+#         elif os.path.isdir(src):
+#             print("loading model...")
+#             model = tf.keras.models.load_model(model)
+
+#             row_range = [input("Enter first row (single letter): "),
+#                          input("Enter last row (single letter): ")]
+
+#             col_range = [int(input("Enter first column (integer): ")),
+#                          int(input("Enter last column (integer): "))]
+
+#             state = evaluate_plates(src, row_range, col_range, model)
+#             print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
+
+#         else:
+#             sys.exit(f"no such file or directory: {src}")
+
+
 def main():
-    """
-    This function is the entry point of the program. It processes command
-    line arguments and calls the appropriate function(s) based on the
-    commands provided.
-    """
 
-    commands = {"-help": None,
-                "-evaluate": ("file_or_dir", "model", "output_dir")}
+    parser = argparse.ArgumentParser(
+        description="Evaluate a single file or all files in a dir."
+    )
 
-    if sys.argv[1] not in commands:
-        sys.exit("not a valid command: python evaluate.py -help")
+    # get function argument
+    parser.add_argument("-f", "--function", type=str,
+                        help="specify desired functionality of module", required=True, choices=["evaluate_image", "evaluate_dir"])
 
-    if sys.argv[1] == "-help":
-        print("See a list of all commands:")
-        for com in commands.keys():
-            if commands[com] is not None:
-                print(com, " ".join(list(commands[com])))
-            else:
-                print(com)
+    # one of those arguments (file path to image or directory path) is required
+    parser.add_argument("-p", "--image_path", type=validate_filepath_arg,
+                        required="evaluate_image" in sys.argv)
 
-    elif sys.argv[1] == "-evaluate":
-        if len(sys.argv) not in [4, 5]:
-            sys.exit("not a valid command: python evaluate.py -help")
+    parser.add_argument("-d", "--image_dir", type=check_dir_path,
+                        required="evaluate_dir" in sys.argv)
 
-        src = sys.argv[2]
-        model = sys.argv[3]
+    # parse path to model
+    parser.add_argument("-m", "--model", type=check_dir_path, required=True)
 
-        if (os.path.isfile(src)):
-            print("loading model...")
-            model = tf.keras.models.load_model(model)
+    args = vars(parser.parse_args())
 
-            state = evaluate(src, model,
-                             classnames=["infected", "not infected"])
-            print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
+    print("loading model...")
+    model = tf.keras.models.load_model(args["model"])
 
-        elif os.path.isdir(src):
-            print("loading model...")
-            model = tf.keras.models.load_model(model)
+    if args["function"] == "evaluate_image":
 
-            row_range = [input("Enter first row (single letter): "),
-                         input("Enter last row (single letter): ")]
+        # get prediction
+        state = evaluate(image_path=args["image_path"], model=model,
+                         classnames=["infected", "not infected"])
 
-            col_range = [int(input("Enter first column (integer): ")),
-                         int(input("Enter last column (integer): "))]
+        print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
-            state = evaluate_plates(src, row_range, col_range, model)
-            print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
+    else:
+        # ask for user input to specify plate coordinates
+        row_range = [input("Enter first row (single letter): "),
+                     input("Enter last row (single letter): ")]
 
-        else:
-            sys.exit(f"no such file or directory: {src}")
+        col_range = [int(input("Enter first column (integer): ")),
+                     int(input("Enter last column (integer): "))]
+
+        evaluate_plates(args["image_dir"], row_range, col_range, model)
 
 
-def evaluate(dir, model, classnames=[1, 0]):
+def check_dir_path(path):
+    if os.path.isdir(path):
+        return path
+    else:
+        raise argparse.ArgumentTypeError(
+            f"readable_dir:{path} is not a valid path")
+
+
+def evaluate(image_path, model, classnames=[1, 0]):
     """
     This function evaluates (i.e. predicts) the infection state of an image with
-    a directory 'dir' and using a certain model and returns the most likely 
+    specified by 'image_path' and using a certain model and returns the most likely 
     prediction class.
 
-    dir: A string representing the path to the directory containing the image file(s).
+    image_path: string specifying path to image.
     model: A TensorFlow Keras model to be used for prediction.
     classnames: A list of class names. By default, this is set to [1, 0] to represent 
     "infected" and "not infected" respectively.
@@ -90,7 +145,7 @@ def evaluate(dir, model, classnames=[1, 0]):
     It returns a tuple containing the predicted class name and the maximum prediction value.
     """
     # load image and get a prediction
-    prediction = model.predict(load_and_prep_image(dir), verbose=2)
+    prediction = model.predict(load_and_prep_image(image_path), verbose=2)
 
     # return most likely class of prediction
     return classnames[int(tf.round(prediction)[0][0])], max(prediction[0])
