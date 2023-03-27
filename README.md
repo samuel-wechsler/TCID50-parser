@@ -13,12 +13,12 @@ Then navigate to the "src" directory and run the desired Python file. The main m
 ### evaluate.py
 In order to predict if a single image shows an infected or non-infected cell culture, run:
 ````
-python evaluate.py -f evaluate_image -p path/to/image
+python evaluate.py -f evaluate_image -p path/to/image -m path/to/model/dir
 ````
 
 To determine the TCID_{50} of an endpoint dilution assay, enter the following command line argument:
 ````
-python evaluate.py -f evaluate_dir -d path/to/image/dir
+python evaluate.py -f evaluate_dir -d path/to/image/dir -m path/to/model/dir
 ````
 
 ### train_test.py
