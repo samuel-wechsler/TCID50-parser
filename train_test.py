@@ -3,6 +3,7 @@ from data_pipe import *
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from sklearn.model_selection import train_test_split, KFold
+from sklearn.calibration import IsotonicRegression as IR
 import argparse
 from pathvalidate.argparse import validate_filepath_arg
 import sys
@@ -39,10 +40,10 @@ def main():
                         choices=["train", "test", "ece"])
 
     parser.add_argument("-c", "--classfile", type=validate_filepath_arg,
-                        required=not ("-p" in sys.argv or "--path" in sys.argv) or "test" in sys.argv or "ece" in sys.argv)
+                        required=not ("-p" in sys.argv or "--path" in sys.argv))
 
     parser.add_argument("-p", "--path", type=check_dir_path,
-                        required=not ("-c" in sys.argv or "--classfile" in sys.argv))
+                        required=not ("-c" in sys.argv or "--classfile" in sys.argv) or "test" in sys.argv or "ece" in sys.argv)
 
     parser.add_argument("-m", "--model", type=check_dir_path,
                         required="test" in sys.argv or "ece" in sys.argv)
@@ -61,7 +62,7 @@ def main():
 
     elif args["function"] == "test":
         accuracy, true_p, true_n = test_model(
-            model=args["model"], data_dir=args["classfile"] or args["path"]
+            model_path=args["model"], data_dir=args["classfile"] or args["path"]
         )
         print(
             f"accuracy: {accuracy}, true positive: {true_p}, true_negative: {true_n}")
@@ -85,8 +86,8 @@ def train_model(labels, images, filename=None):
     labeled images. It takes as input the image labels and pixel arrays
     as well as an optional filename to save the trained model.
     """
-    # Split data into training and testing sets
-    labels = tf.keras.utils.to_categorical(labels, num_classes=2)
+    # # Split data into training and testing sets
+    # labels = tf.keras.utils.to_categorical(labels, num_classes=2)
 
     x_train, x_test, y_train, y_test = train_test_split(
         np.array(images), np.array(labels), test_size=TEST_SIZE
@@ -104,7 +105,7 @@ def train_model(labels, images, filename=None):
                         validation_data=(x_test, y_test))
 
     # Plot assessment of model
-    plot_model(history, sys.argv[1].split('/')[-1])
+    plot_model(history)
 
     if filename is not None:
         model.save(filename)
@@ -150,13 +151,13 @@ def get_model():
             tf.keras.layers.Dropout(0.4),
 
             # Add an output layer with output units for all 2 categories
-            tf.keras.layers.Dense(2, activation="sigmoid")
+            tf.keras.layers.Dense(1, activation="sigmoid")
         ]
     )
 
     # Train neural net
     model.compile(
-        optimizer=RMSprop(learning_rate=0.0005),
+        optimizer=RMSprop(learning_rate=0.00025),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -171,7 +172,7 @@ def test_model(data_dir, model_path):
     """
     # load model
     print("loading model...")
-    model = tf.keras.models.load_model(model)
+    model = tf.keras.models.load_model(model_path)
 
     # variables to calculate rates
     predicted_positives = 0
@@ -312,7 +313,7 @@ def plot_ece(inf_fractions, not_inf_fractions):
     fig.savefig(filename, bbox_inches='tight', dpi=400)
 
 
-def plot_model(history, model, dir=""):
+def plot_model(history, dir=""):
     """
     This function plots the accuracy and loss of a model with respect
     to training epochs.
@@ -378,7 +379,8 @@ def plot_model(history, model, dir=""):
 
     # save figure
     date = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = os.path.join("accuracy_plots", model + "_" + date + ".png")
+    filename = os.path.join("plots", "accuracy_plots",
+                            "model_" + date + ".png")
     fig.savefig(filename, bbox_inches='tight', dpi=400)
 
 
