@@ -37,8 +37,6 @@ def get_outlier_rows(plate, titer, D, D_0, Q):
         # get probability of current row distribution
         r = binom.pmf(k=sum(row), n=len(row), p=p)
 
-        print("row ", row, " prob ", r, p)
-
         # if outlier, append row index
         if r < 0.05:
             outlier_rows.append(d-1)
