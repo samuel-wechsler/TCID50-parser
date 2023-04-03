@@ -8,6 +8,7 @@ categories.
 import os
 import sys
 import cv2
+from data_pipe import get_file_paths
 
 
 def main():
@@ -21,51 +22,50 @@ def main():
     files = open(sys.argv[2], 'r').readlines()
     files = [f.split(';')[0].replace('\n', '') for f in files]
 
-    print(files)
-
     # walk through a directory
-    for dirpath, dirnames, filenames in os.walk(data_dir):
+    file_paths = get_file_paths(data_dir)
 
-        for file in filenames:
-            fp = os.path.join(dirpath, file)
+    for path in file_paths:
+        if path in files:
+            print("already classified", path)
+            continue
 
-            if fp in files or '._' in fp:
-                print("skipped: ", fp)
+        filename, ext = os.path.splitext(path)
 
-            elif file.endswith('tif') and ("GFP" in file or "CY5" in file):
+        try:
+            # show image
+            img = cv2.imread(path)
+            cv2.imshow("image", img)
 
-                try:
-                    # show image
-                    img = cv2.imread(fp)
-                    cv2.imshow("image", img)
+            # waits for user to press any key
+            # (this is necessary to avoid Python kernel form crashing)
+            cv2.waitKey(0)
 
-                    # waits for user to press any key
-                    # (this is necessary to avoid Python kernel form crashing)
-                    cv2.waitKey(0)
+            # closing all open windows
+            cv2.destroyAllWindows()
 
-                    # closing all open windows
-                    cv2.destroyAllWindows()
+        except Exception as e:
+            print("Error: ", e)
+            print("File: ", path)
 
-                except Exception as e:
-                    print("Error: ", e)
-                    print("File: ", fp)
+            ans = input("Continue ? (y/n) : ")
+            while ans != "y":
+                ans = input("Continue ? (y/n) : ")
+            continue
 
-                    ans = input("Continue ? (y/n) : ")
-                    while ans != "y":
-                        ans = input("Continue ? (y/n) : ")
-                    continue
+        # ask for classification
+        classification = input(f"{filename}: infected? (0 / 1): ")
 
-                # ask for classification
-                classification = input(f"{file}: infected? (0 / 1): ")
+        # check that input is valid
+        while classification not in ["0", "1"]:
+            classification = input(f"{filename}: infected? (0 / 1): ")
 
-                # check that input is valid
-                while classification not in ["0", "1"]:
-                    classification = input(f"{file}: infected? (0 / 1): ")
-
-                # add classification data to txt file
-                line = f"{fp};{classification}\n"
-                output.write(line)
+        # add classification data to txt file
+        line = f"{path};{classification}\n"
+        output.write(line)
 
 
 if __name__ == "__main__":
     main()
+
+# File:  /Volumes/T7/tcid50_datasets/fluocells/Mar23bS1C5R3_DMr_200x_y_ll.png
