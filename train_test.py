@@ -22,7 +22,7 @@ from tensorflow.keras.optimizers.experimental import RMSprop
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 TEST_SIZE = 0.2
-EPOCHS = 10
+EPOCHS = 100
 
 
 def main():
@@ -31,25 +31,37 @@ def main():
     command line arguments to determine whether the user wants to train a model
     or test a trained model.
     """
-
+    # create parser object
     parser = argparse.ArgumentParser(
         description="Train or test a neural net."
     )
+
+    # add argument to specify desired function
     parser.add_argument("-f", "--function",  type=str,
                         help="desired functionality of module", required=True,
                         choices=["train", "test", "ece"])
 
+    # add argument to specify which classification file to choose
     parser.add_argument("-c", "--classfile", type=validate_filepath_arg,
                         required=not ("-p" in sys.argv or "--path" in sys.argv))
 
+    # add argument to specify which path (containing images) to choose
     parser.add_argument("-p", "--path", type=check_dir_path,
-                        required=not ("-c" in sys.argv or "--classfile" in sys.argv) or "test" in sys.argv or "ece" in sys.argv)
+                        required=not ("-c" in sys.argv or "--classfile" in sys.argv))
 
+    # specify path to trained modle
     parser.add_argument("-m", "--model", type=check_dir_path,
                         required="test" in sys.argv or "ece" in sys.argv)
 
+    # optionial denoising model
+    parser.add_argument("-d", "--denoiser", type=check_dir_path)
+
+    parser.add_argument("-l", "--limit", type=int)
+
+    # convert parsed arguments to dictionary
     args = vars(parser.parse_args())
 
+    # call functions according to specified arguments
     if args["function"] == "train":
         # Get image arrays and labels for all images
         if args["classfile"] is not None:
@@ -61,9 +73,16 @@ def main():
         train_model(labels, images, filename=args["model"] or None)
 
     elif args["function"] == "test":
-        accuracy, true_p, true_n = test_model(
-            model_path=args["model"], data_dir=args["classfile"] or args["path"]
-        )
+        # distinction between classficiation file or data directory as input
+        if args["classfile"] is not None:
+            accuracy, true_p, true_n = test_model(
+                model_path=args["model"], classfile=args["classfile"], limit=args["limit"] or None
+            )
+        elif args["path"] is not None:
+            accuracy, true_p, true_n = test_model(
+                model_path=args["model"], data_dir=args["path"], limit=args["limit"] or None
+            )
+
         print(
             f"accuracy: {accuracy}, true positive: {true_p}, true_negative: {true_n}")
 
@@ -73,6 +92,9 @@ def main():
 
 
 def check_dir_path(path):
+    """
+    This function is used by argparse to check if an argument is a directory.
+    """
     if os.path.isdir(path):
         return path
     else:
@@ -86,8 +108,8 @@ def train_model(labels, images, filename=None):
     labeled images. It takes as input the image labels and pixel arrays
     as well as an optional filename to save the trained model.
     """
-    # # Split data into training and testing sets
-    # labels = tf.keras.utils.to_categorical(labels, num_classes=2)
+    # Split data into training and testing sets
+    labels = tf.keras.utils.to_categorical(labels, num_classes=2)
 
     x_train, x_test, y_train, y_test = train_test_split(
         np.array(images), np.array(labels), test_size=TEST_SIZE
@@ -101,8 +123,9 @@ def train_model(labels, images, filename=None):
     print(model.summary(), "\n\n")
 
     # Fit and evaluate model on training data
-    history = model.fit(x_train, y_train, epochs=EPOCHS,
-                        validation_data=(x_test, y_test))
+    history = model.fit(x_train, y_train, batch_size=32, epochs=EPOCHS,
+                        validation_data=(x_test, y_test),
+                        callbacks=[tf.keras.callbacks.EarlyStopping(patience=3)])
 
     # Plot assessment of model
     plot_model(history)
@@ -120,7 +143,7 @@ def get_model():
     """
     # Data augmentation
     data_augmentation = tf.keras.Sequential([
-        tf.keras.layers.RandomFlip("horizontal_and_vertical"),
+        tf.keras.layers.RandomFlip("horizontal_and_vertical")
     ])
 
     # Create a convolutional neural network
@@ -151,13 +174,13 @@ def get_model():
             tf.keras.layers.Dropout(0.4),
 
             # Add an output layer with output units for all 2 categories
-            tf.keras.layers.Dense(1, activation="sigmoid")
+            tf.keras.layers.Dense(2, activation="sigmoid")
         ]
     )
 
     # Train neural net
     model.compile(
-        optimizer=RMSprop(learning_rate=0.00025),
+        optimizer=RMSprop(learning_rate=0.001),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -165,7 +188,7 @@ def get_model():
     return model
 
 
-def test_model(data_dir, model_path):
+def test_model(classfile=None, data_dir=None, model_path=None, limit=np.inf):
     """
     This function calculates the accuracy, true positive and true negative rate, evaluated
     on all data specified in a classification text file.
@@ -180,32 +203,41 @@ def test_model(data_dir, model_path):
     predicted_negatives = 0
     actual_negatives = 0
 
-    mistakes = []
-    low_confidence = []
+    mistakes = {}
+    low_confidence = {}
 
-    filenames, labels = load_data_df(data_dir)
+    # if classification file specified
+    if classfile is not None:
+        filepaths, labels = load_data_df_from_class(classfile, limit=limit)
+    else:
+        filepaths, labels = load_data_df_from_dir(data_dir, limit=limit)
 
-    for filename, label in zip(filenames, labels):
-        result = evaluate(filename, model)
+    # counter
+    c = 0
+
+    for filepath, label in zip(filepaths, labels):
+        result = evaluate(filepath, model=model)
         prediction = result[0]
         confidence = result[1]
 
         if confidence < 0.55:
-            low_confidence.append(filename)
+            low_confidence[filepath] = prediction
 
         if label == "infected":
             actual_positives += 1
             if prediction == 1:
                 predicted_positives += 1
             else:
-                mistakes.append(filename)
+                mistakes[filepath] = prediction
 
         else:
             actual_negatives += 1
             if prediction == 0:
                 predicted_negatives += 1
             else:
-                mistakes.append(filename)
+                mistakes[filepath] = prediction
+
+        c += 1
 
     accuracy = (predicted_positives + predicted_negatives) / \
         (actual_positives + actual_negatives)
@@ -234,7 +266,7 @@ def get_model_ece(model, data_dir):
     inf_occurences = [0] * 10
     not_inf_occurences = [0] * 10
 
-    filenames, labels = load_data_df(data_dir)
+    filenames, labels = load_data_df_from_dir(data_dir)
 
     print(filenames)
 
@@ -319,7 +351,7 @@ def plot_model(history, dir=""):
     to training epochs.
     """
     # epoch list
-    nb_epochs = list(range(1, EPOCHS+1))
+    nb_epochs = list(history.history['val_accuracy'])
 
     # parse data
     train_accuracy = history.history["accuracy"]
