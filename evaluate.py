@@ -9,7 +9,9 @@ from datetime import datetime
 import os
 import sys
 import numpy as np
+import copy
 import argparse
+from tqdm import tqdm
 from pathvalidate.argparse import validate_filepath_arg
 
 import matplotlib.pyplot as plt
@@ -23,60 +25,6 @@ from data_pipe import load_and_prep_image
 from control import get_outlier_rows
 
 IMG_HEIGHT, IMG_WIDTH = (256, 256)
-
-
-# def main():
-#     """
-#     This function is the entry point of the program. It processes command
-#     line arguments and calls the appropriate function(s) based on the
-#     commands provided.
-#     """
-
-#     commands = {"-help": None,
-#                 "-evaluate": ("file_or_dir", "model", "output_dir")}
-
-#     if sys.argv[1] not in commands:
-#         sys.exit("not a valid command: python evaluate.py -help")
-
-#     if sys.argv[1] == "-help":
-#         print("See a list of all commands:")
-#         for com in commands.keys():
-#             if commands[com] is not None:
-#                 print(com, " ".join(list(commands[com])))
-#             else:
-#                 print(com)
-
-#     elif sys.argv[1] == "-evaluate":
-#         if len(sys.argv) not in [4, 5]:
-#             sys.exit("not a valid command: python evaluate.py -help")
-
-#         src = sys.argv[2]
-#         model = sys.argv[3]
-
-#         if (os.path.isfile(src)):
-#             print("loading model...")
-#             model = tf.keras.models.load_model(model)
-
-#             state = evaluate(src, model,
-#                              classnames=["infected", "not infected"])
-
-#             print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
-
-#         elif os.path.isdir(src):
-#             print("loading model...")
-#             model = tf.keras.models.load_model(model)
-
-#             row_range = [input("Enter first row (single letter): "),
-#                          input("Enter last row (single letter): ")]
-
-#             col_range = [int(input("Enter first column (integer): ")),
-#                          int(input("Enter last column (integer): "))]
-
-#             state = evaluate_plates(src, row_range, col_range, model)
-#             print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
-
-#         else:
-#             sys.exit(f"no such file or directory: {src}")
 
 
 def main():
@@ -113,14 +61,22 @@ def main():
         print(state[0], " with ", round(state[1] * 100, 2), "% confidence")
 
     else:
-        # ask for user input to specify plate coordinates
-        row_range = [input("Enter first row (single letter): "),
-                     input("Enter last row (single letter): ")]
+        sub = int(input("How many subdivisions per plate?: "))
+        row_ranges = []
+        col_ranges = []
 
-        col_range = [int(input("Enter first column (integer): ")),
-                     int(input("Enter last column (integer): "))]
+        for i in range(sub):
+            # ask for user input to specify plate coordinates
+            row_range = [input("Enter first row (single letter): "),
+                         input("Enter last row (single letter): ")]
 
-        evaluate_plates(args["image_dir"], row_range, col_range, model)
+            col_range = [int(input("Enter first column (integer): ")),
+                         int(input("Enter last column (integer): "))]
+
+            row_ranges.append(row_range)
+            col_ranges.append(col_range)
+
+        evaluate_plates(args["image_dir"], row_ranges, col_ranges, model)
 
 
 def check_dir_path(path):
@@ -131,7 +87,7 @@ def check_dir_path(path):
             f"readable_dir:{path} is not a valid path")
 
 
-def evaluate(image_path, model, classnames=[1, 0]):
+def evaluate(image_path, model=None, classnames=[1, 0]):
     """
     This function evaluates (i.e. predicts) the infection state of an image with
     specified by 'image_path' and using a certain model and returns the most likely 
@@ -145,10 +101,14 @@ def evaluate(image_path, model, classnames=[1, 0]):
     It returns a tuple containing the predicted class name and the maximum prediction value.
     """
     # load image and get a prediction
-    prediction = model.predict(load_and_prep_image(image_path), verbose=2)
+    prediction = model.predict(load_and_prep_image(image_path), verbose=0)
 
-    # return most likely class of prediction
-    return classnames[int(tf.round(prediction)[0][0])], max(prediction[0])
+    if len(prediction[0]) > 1:
+        # return most likely class of prediction
+        return classnames[int(tf.round(prediction)[0][0])], max(prediction[0])
+
+    else:
+        return int(prediction[0][0] >= 0.5), prediction[0][0]
 
 
 def evaluate_plate(plate, model):
@@ -167,11 +127,37 @@ def evaluate_plate(plate, model):
         eval_row = []
         for file in row:
             prediction = evaluate(file, model)
-            res = prediction[0] if prediction[1] > 0.55 else 0.5
+            res = prediction[0]
             eval_row.append(res)
         outputs.append(eval_row)
 
     return outputs
+
+
+def checked_plate(plate, eval_plate, classfile):
+    """
+    This function returns the actual (i.e., human labeled) values for a
+    cell culture image.
+    """
+    # remove late
+    files = open(classfile, 'r')
+    check_dict = {
+        f.split(";")[0]: int(f.split(";")[1].replace("\n", ""))
+        for f in files
+    }
+
+    check_plate = []
+    corr_plate = copy.deepcopy(eval_plate)
+    for i in range(len(plate)):
+        row = []
+        for j in range(len(plate[i])):
+            row.append(check_dict[plate[i][j]] == eval_plate[i][j])
+            corr_plate[i][j] = int(check_dict[plate[i][j]])
+        check_plate.append(row)
+
+    delta_titer = np.log10(spear_karb(corr_plate, 1, -1)) - \
+        np.log10(spear_karb(eval_plate, 1, -1))
+    return check_plate, delta_titer
 
 
 def get_plates(data_dir, row_range, col_range):
@@ -208,31 +194,45 @@ def get_plates(data_dir, row_range, col_range):
     return plate
 
 
-def evaluate_plates(data_dir, row_range, col_range, model):
+def evaluate_plates(data_dir, row_ranges, col_ranges, model):
     """
     This function evaluates all plates that are located in data_dir.
     """
+    # create saving directory
+    idx = len(os.listdir("plots/evaluated_plates"))-1
+    save_dir = f"plots/evaluated_plates/run_{idx}/"
+    os.mkdir(save_dir)
 
-    for plate_path in os.listdir(data_dir):
-        if "docx" in plate_path or '._' in plate_path:
-            continue
+    # correction of titers
+    corrs = []
+    plate_dirs = [dir for dir in os.listdir(data_dir)
+                  if os.path.isdir(os.path.join(data_dir, dir))]
 
-        filepath = os.path.join(data_dir, plate_path)
+    for plate_path in tqdm(plate_dirs, total=len(plate_dirs)):
 
-        plate = get_plates(filepath, row_range, col_range)
+        for row_range, col_range in zip(row_ranges, col_ranges):
+            filepath = os.path.join(data_dir, plate_path)
 
-        plate = evaluate_plate(plate, model)
+            plate = get_plates(filepath, row_range, col_range)
 
-        titer = spear_karb(plate, 1, -1)
-        outlier_rows = get_outlier_rows(plate, titer, 10, 10, 35)
+            eval_plate = evaluate_plate(plate, model)
+            check_plate, corr = checked_plate(
+                plate, eval_plate, "classifications/classification.txt")
+            corrs.append(corr)
 
-        display_plate(plate)
-        rows = "".join(row_range)
-        cols = "".join([str(i) for i in col_range])
+            titer = spear_karb(eval_plate, 1, -1)
+            outlier_rows = get_outlier_rows(eval_plate, titer, 10, 10, 35)
 
-        save_plate(plate,  titer, outlier_rows, row_range, col_range,
-                   save_dir=f"evaluated_plates/run2_outlier_det/{plate_path}{rows}_{cols}{'%.2E' % titer}.png")
-        print('%.2E' % titer)
+            # display_plate(eval_plate)
+            rows = "".join(row_range)
+            cols = "".join([str(i) for i in col_range])
+
+            save_checked_plate(eval_plate, check_plate, titer, corr, outlier_rows, row_range,
+                               col_range, save_path=f"{save_dir}/{plate_path}{rows}_{cols}{'%.2E' % titer}.png")
+            # print('%.2E' % titer)
+
+    print(
+        f"\n\n End result: mean difference {np.mean(corrs)} ± {np.std(corrs)}")
 
 
 def display_plate(plate):
@@ -255,7 +255,76 @@ def display_plate(plate):
     print("\n\n")
 
 
-def save_plate(plate, titer, outlier_rows, row_range, col_range, save_dir):
+def save_checked_plate(plate, checked_plate, titer, delta_titer, outlier_rows, row_range, col_range, save_path):
+    row_range = [chr(i)
+                 for i in range(ord(row_range[0]), ord(row_range[1]) + 1)]
+    col_range = list(range(col_range[0], col_range[1] + 1))
+
+    well_size = 100
+    well_border = 10
+
+    nb_col = len(plate[0])
+    nb_row = len(plate)
+
+    # Create a blank canvas
+    img = Image.new("RGBA",
+                    ((nb_col + 5) * well_size,
+                     (nb_row + 1) * well_size)
+                    )
+
+    font = ImageFont.truetype("assets/fonts/OpenSans-Regular.ttf", 80)
+    draw = ImageDraw.Draw(img)
+
+    for i in range(1, nb_row + 1):
+        # color is red if outlier, else white
+        outlier = "    *" if (i-1) in outlier_rows else ""
+        draw.text((nb_col+1, i*well_size), outlier, fill="black", font=font)
+
+        # draw row letter
+        draw.text((0, i * well_size),
+                  row_range[i-1], fill="black", font=font)
+
+        draw.text(((nb_col+1)*well_size, i*well_size),
+                  outlier, fill="black", font=font)
+
+        for j in range(1, nb_col + 1):
+            # draw column number
+            draw.text((j * well_size + 2 * well_border, 0),
+                      str(col_range[j-1]), fill="black", font=font)
+
+            # define dimensions of well
+            dims = ((j * well_size + well_border,
+                     i * well_size + well_border),
+                    ((j + 1) * well_size - well_border,
+                     (i + 1) * well_size - well_border)
+                    )
+
+            # draw a well
+            color = "white" if checked_plate[i-1][j-1] else "red"
+            draw.rectangle(dims, fill=color, outline="black", width=3)
+
+            # if infected, draw a cross
+            if plate[i-1][j-1]:
+                cross = (dims,
+                         ((j * well_size + well_border, (i + 1) * well_size - well_border),
+                          ((j + 1) * well_size - well_border, i * well_size + well_border))
+                         )
+
+                draw.line(cross[0], fill="black", width=3)
+                draw.line(cross[1], fill="black", width=3)
+
+    # draw titer
+    draw.text((((nb_row) * well_size / 2),
+               (nb_col + 3) * well_size),
+              f"TCID50={titer}\n \delta logtiter={delta_titer}",
+              fill="black",
+              font=font
+              )
+
+    img.save(save_path)
+
+
+def save_plate(plate, titer, outlier_rows, row_range, col_range, save_path):
     """
     This function creates an illustrative png of a well plate an marks
     each infected well with a cross.
@@ -299,8 +368,8 @@ def save_plate(plate, titer, outlier_rows, row_range, col_range, save_dir):
                      (i + 1) * well_size - well_border)
                     )
 
-            # purple if outlier
-            color = "purple" if plate[i-1][j-1] == 0.5 else "white"
+            # # purple if outlier
+            # color = "purple" if plate[i-1][j-1] == 0.5 else "white"
 
             # draw a well
             draw.rectangle(dims, fill=color, outline="black", width=3)
@@ -323,7 +392,7 @@ def save_plate(plate, titer, outlier_rows, row_range, col_range, save_dir):
               font=font
               )
 
-    img.save(save_dir)
+    img.save(save_path)
 
 
 def spear_karb(plate, d, d_0):
