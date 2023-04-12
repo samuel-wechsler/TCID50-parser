@@ -33,10 +33,10 @@ import tensorflow_io as tfio
 
 import pandas as pd
 
-IMG_HEIGHT, IMG_WIDTH = 256, 256
+IMG_HEIGHT, IMG_WIDTH = 128, 128
 
 
-def load_and_prep_image(filename, img_shape=128):
+def load_and_prep_image(filename, img_shape=IMG_WIDTH):
     """
     This function reads an image from a file, turns it into a
     tensor and resizes it to a specific shape.
@@ -179,17 +179,20 @@ def load_data_df_from_dir(data_dir, limit=np.inf):
     labels = []
 
     file_paths = get_file_paths(data_dir)
+    c = 0
 
     for path in tqdm(file_paths, total=len(file_paths)):
         filename, ext = os.path.splitext(os.path.split(path))
 
         # ignore files that don't exist, are in the skip list, or who's directory is in the skip list
-        if (os.path.isfile(path)) and (filename not in skip) and (not any([frag in path for frag in skip])):
+        if (os.path.isfile(path)) and (filename not in skip) and (not any([frag in path for frag in skip])) and c < limit:
             # parse label
             label = "not infected" if 'not_infected' in path else "infected"
             labels.append(label)
 
             files.append(path)
+
+            c += 1
 
     # df = pd.DataFrame(list(zip(files, labels)), columns=["filenames", "labels"])
     return files, labels
@@ -207,6 +210,7 @@ def load_data_df_from_class(classfile, limit=np.inf):
     labels = []
 
     classfile = open(classfile, 'r')
+    c = 0
 
     for line in classfile:
         entries = line.split(";")
@@ -215,11 +219,12 @@ def load_data_df_from_class(classfile, limit=np.inf):
         classification = int(entries[1].replace("\n", ""))
 
         # ignore files that don't exist, are in the skip list, or who's directory is in the skip list
-        if (os.path.isfile(filepath)) and (filename not in skip) and (not any([frag in filepath for frag in skip])):
+        if (os.path.isfile(filepath)) and (filename not in skip) and (not any([frag in filepath for frag in skip])) and c < limit:
             # parse label and filepath
             label = "infected" if classification else "not infected"
             labels.append(label)
             files.append(filepath)
+            c += 1
 
     # df = pd.DataFrame(list(zip(files, labels)), columns=["filenames", "labels"])
     return files, labels

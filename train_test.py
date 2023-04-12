@@ -22,7 +22,7 @@ from tensorflow.keras.optimizers.experimental import RMSprop
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 TEST_SIZE = 0.2
-EPOCHS = 100
+EPOCHS = 32
 
 
 def main():
@@ -39,7 +39,7 @@ def main():
     # add argument to specify desired function
     parser.add_argument("-f", "--function",  type=str,
                         help="desired functionality of module", required=True,
-                        choices=["train", "test", "ece"])
+                        choices=["train", "test", "visualize", "ece"])
 
     # add argument to specify which classification file to choose
     parser.add_argument("-c", "--classfile", type=validate_filepath_arg,
@@ -48,6 +48,8 @@ def main():
     # add argument to specify which path (containing images) to choose
     parser.add_argument("-p", "--path", type=check_dir_path,
                         required=not ("-c" in sys.argv or "--classfile" in sys.argv))
+
+    parser.add_argument("-i", "--image_path")
 
     # specify path to trained modle
     parser.add_argument("-m", "--model", type=check_dir_path,
@@ -76,11 +78,11 @@ def main():
         # distinction between classficiation file or data directory as input
         if args["classfile"] is not None:
             accuracy, true_p, true_n = test_model(
-                model_path=args["model"], classfile=args["classfile"], limit=args["limit"] or None
+                model_path=args["model"], classfile=args["classfile"], limit=args["limit"] or np.inf
             )
         elif args["path"] is not None:
             accuracy, true_p, true_n = test_model(
-                model_path=args["model"], data_dir=args["path"], limit=args["limit"] or None
+                model_path=args["model"], data_dir=args["path"], limit=args["limit"] or np.inf
             )
 
         print(
@@ -88,7 +90,7 @@ def main():
 
     elif args["function"] == "ece":
         get_model_ece(model=args["model"],
-                      data_dir=args["classfile"] or args["path"])
+                      data_dir=args["classfile"] or args["path"], limit=args["limit"] or np.inf)
 
 
 def check_dir_path(path):
@@ -108,8 +110,8 @@ def train_model(labels, images, filename=None):
     labeled images. It takes as input the image labels and pixel arrays
     as well as an optional filename to save the trained model.
     """
-    # Split data into training and testing sets
-    labels = tf.keras.utils.to_categorical(labels, num_classes=2)
+    # # Split data into training and testing sets
+    # labels = tf.keras.utils.to_categorical(labels, num_classes=2)
 
     x_train, x_test, y_train, y_test = train_test_split(
         np.array(images), np.array(labels), test_size=TEST_SIZE
@@ -123,9 +125,12 @@ def train_model(labels, images, filename=None):
     print(model.summary(), "\n\n")
 
     # Fit and evaluate model on training data
+    earlystopper = tf.keras.callbacks.EarlyStopping(patience=5, verbose=1)
+    checkpointer = tf.keras.callbacks.ModelCheckpoint(filename, verbose=1,
+                                                      save_best_only=True)
     history = model.fit(x_train, y_train, batch_size=32, epochs=EPOCHS,
                         validation_data=(x_test, y_test),
-                        callbacks=[tf.keras.callbacks.EarlyStopping(patience=3)])
+                        callbacks=[earlystopper, checkpointer])
 
     # Plot assessment of model
     plot_model(history)
@@ -156,14 +161,12 @@ def get_model():
             data_augmentation,
 
             # Perform convolution and pooling five times
-            tf.keras.layers.Conv2D(
-                32, (3, 3), activation="relu", input_shape=(IMG_HEIGHT, IMG_WIDTH, 1)),
+            tf.keras.layers.Conv2D(16, (3, 3), activation="relu",
+                                   input_shape=(IMG_HEIGHT, IMG_WIDTH, 1)),
+            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+            tf.keras.layers.Conv2D(32, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
             tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
-            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-            tf.keras.layers.Conv2D(128, (3, 3), activation="relu"),
-            tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-            tf.keras.layers.Conv2D(256, (3, 3), activation="relu"),
             tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
 
             # Flatten units
@@ -171,16 +174,15 @@ def get_model():
 
             # Add hidden layers with dropout
             tf.keras.layers.Dense(512, activation="relu"),
-            tf.keras.layers.Dropout(0.4),
 
             # Add an output layer with output units for all 2 categories
-            tf.keras.layers.Dense(2, activation="sigmoid")
+            tf.keras.layers.Dense(1, activation="sigmoid")
         ]
     )
 
     # Train neural net
     model.compile(
-        optimizer=RMSprop(learning_rate=0.001),
+        optimizer=RMSprop(learning_rate=0.0005),
         loss="binary_crossentropy",
         metrics=["accuracy"]
     )
@@ -212,9 +214,6 @@ def test_model(classfile=None, data_dir=None, model_path=None, limit=np.inf):
     else:
         filepaths, labels = load_data_df_from_dir(data_dir, limit=limit)
 
-    # counter
-    c = 0
-
     for filepath, label in zip(filepaths, labels):
         result = evaluate(filepath, model=model)
         prediction = result[0]
@@ -237,8 +236,6 @@ def test_model(classfile=None, data_dir=None, model_path=None, limit=np.inf):
             else:
                 mistakes[filepath] = prediction
 
-        c += 1
-
     accuracy = (predicted_positives + predicted_negatives) / \
         (actual_positives + actual_negatives)
     true_positive = predicted_positives / actual_positives
@@ -255,7 +252,7 @@ def test_model(classfile=None, data_dir=None, model_path=None, limit=np.inf):
     return accuracy, true_positive, true_negative
 
 
-def get_model_ece(model, data_dir):
+def get_model_ece(model, data_dir, limit=np.inf):
     """
     This function calculates the expected calibration error (ECE).
     """
@@ -266,9 +263,10 @@ def get_model_ece(model, data_dir):
     inf_occurences = [0] * 10
     not_inf_occurences = [0] * 10
 
-    filenames, labels = load_data_df_from_dir(data_dir)
-
-    print(filenames)
+    if os.path.isdir(data_dir):
+        filenames, labels = load_data_df_from_dir(data_dir, limit=limit)
+    else:
+        filenames, labels = load_data_df_from_class(data_dir, limit=limit)
 
     for image in filenames:
         # predict state of cell culture image
@@ -341,7 +339,7 @@ def plot_ece(inf_fractions, not_inf_fractions):
 
     # save figure
     date = datetime.now().strftime("%Y%m%d%H%M%S")
-    filename = os.path.join("ece_plots", date + ".png")
+    filename = os.path.join("plots", "ece_plots", date + ".png")
     fig.savefig(filename, bbox_inches='tight', dpi=400)
 
 
@@ -351,7 +349,8 @@ def plot_model(history, dir=""):
     to training epochs.
     """
     # epoch list
-    nb_epochs = list(history.history['val_accuracy'])
+    nb_epochs = len(list(history.history['val_accuracy']))
+    epochs = list(range(1, nb_epochs + 1))
 
     # parse data
     train_accuracy = history.history["accuracy"]
@@ -372,13 +371,13 @@ def plot_model(history, dir=""):
     fig.tight_layout(pad=3.0)
 
     # plot data
-    ax1.plot(nb_epochs, train_accuracy, color="blue",
+    ax1.plot(epochs, train_accuracy, color="blue",
              marker='o', label='training')
-    ax1.plot(nb_epochs, test_accuracy, color='red',
+    ax1.plot(epochs, test_accuracy, color='red',
              marker='o', label='validation')
 
-    ax2.plot(nb_epochs, train_loss, marker='o', color="blue")
-    ax2.plot(nb_epochs, test_loss, marker='o', color='red')
+    ax2.plot(epochs, train_loss, marker='o', color="blue")
+    ax2.plot(epochs, test_loss, marker='o', color='red')
 
     # set tick params
     ax1.tick_params(axis='x', labelsize=15)
@@ -403,7 +402,7 @@ def plot_model(history, dir=""):
     fig.legend(lines, labels, loc="upper right", frameon=False)
 
     # set end result as text
-    ax2.text(1.3 * EPOCHS, 0.5 * max(train_loss),
+    ax2.text(1.3 * nb_epochs, 0.5 * max(train_loss),
              f"Result after training: \naccuracy = {round(test_accuracy[-1]*100, 2)}%")
 
     # Adjusting the sub-plots
@@ -473,6 +472,41 @@ def plot_model_kf_vc(accuracy, loss, model, dir=""):
     date = datetime.now().strftime("%Y%m%d%H%M%S")
     filename = os.path.join("accuracy_plots", model + "_" + date + ".png")
     fig.savefig(filename, bbox_inches='tight', dpi=400)
+
+
+def viszalize_model(image, model):
+    successive_outputs = [layer.output for layer in model.layers]
+    visualization_model = tf.keras.Model(input=model.input,
+                                         outputs=successive_outputs)
+    successive_feature_maps = visualization_model.predict(x)
+    layer_names = [layer.name for layer in model.layers]
+
+    # plot everything
+    for layer_name, feature_map in zip(layer_names, successive_feature_maps):
+
+        if len(feature_map.shape) == 4:  # if it is a conv or pooling layer
+            n_features = feature_map.shape[-1]  # n features
+            size = feature_map.shape[1]  # shape
+
+            # create a grid to display the data
+            display_grid = np.zeros((size, size * n_features))
+
+            # some post-processing
+            for i in range(n_features):
+                image = feature_map[0, :, :, i]
+                image -= image.mean()
+                image /= image.std()
+                image *= 64
+                image += 128
+                image = np.clip(image, 0, 255).astype('uint8')
+                display_grid[:, i * size: (i + 1) * size] = image
+
+                # show the chart
+                scale = 20. / n_features
+                plt.figure(figsize=(scale * n_features, scale))
+                plt.title(layer_name)
+                plt.grid(False)
+                plt.imshow(display_grid, aspect='auto', cmap='viridis')
 
 
 if __name__ == "__main__":
