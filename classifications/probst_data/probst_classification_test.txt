@@ -1,0 +1,288 @@
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/A9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/B9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/C9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/D9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E3_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E5_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/E9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F1_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F3_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F4_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F5_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F6_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/F9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G1_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G3_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G4_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G5_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G6_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/G9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H1_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H3_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H4_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H5_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H6_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_141456_Plate 2/H9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A10_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A11_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A12_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A7_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A8_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/A9_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B10_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B11_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B12_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B7_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B8_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/B9_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C10_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C11_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C12_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C7_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C8_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/C9_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D1_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D10_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D11_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D12_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D2_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D4_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D6_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D7_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D8_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/D9_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E1_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E10_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E3_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E4_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E5_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E6_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E7_01_2_1_GFP_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/E9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F1_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F3_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F4_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F5_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F6_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/F9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G1_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G3_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G4_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G5_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G6_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/G9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H1_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H10_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H11_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H12_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H2_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H3_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H4_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H5_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H6_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H7_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H8_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock/220426_133926_Plate 1/H9_01_2_1_GFP_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A1_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A2_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A3_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A4_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A5_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A6_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/A9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B1_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B2_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B3_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B4_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B5_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B6_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/B9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C1_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C2_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C3_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C4_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C5_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D1_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D2_-1_1_1_Stitched[GFP 469,525]_001.tif;1
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D3_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D4_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D5_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D6_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/D9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E1_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E2_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E3_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E4_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E5_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E6_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/E9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F1_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F2_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F3_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F4_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F5_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F6_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/F9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G1_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G2_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G3_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G4_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G5_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G6_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/G9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H1_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H10_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H11_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H12_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H2_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H3_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H4_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H5_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H6_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H7_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H8_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/H9_-1_1_1_Stitched[GFP 469,525]_001.tif;0
+/Volumes/T7/tcid50_datasets/Lukas_Probst_IDV/Lukas_Probst_IDV_ori/Titration Stock 2/220318_131337_Plate 1/#2231847567_Stitched/C6_-1_1_1_Stitched[GFP 469,525]_001.tif;0
