@@ -334,15 +334,23 @@ class App(QMainWindow, FileHandling, ErrorHandling):
             # scroll to item in list
             self.scrollToCurrent()
 
-        # disable pushButtons if index out of list range
+        # display next image
+        self.displayImage(self.imgFiles[self.imgIndex])
+
+        # disable redo button if no classifications have been made
+        if self.imgFiles[self.imgIndex] not in self.classifications.keys():
+            self.setRedoButtonState(False)
+        else:
+            self.setRedoButtonState(True)
+
+        # disable classify buttons if index out of list range
         if self.imgIndex == 0:
             self.setRedoButtonState(False)
 
         elif self.imgIndex == len(self.imgFiles):
             self.setInfButtonState(False)
         else:
-            self.displayImage(self.imgFiles[self.imgIndex])
-            self.setButtonState(True)
+            self.setInfButtonState(True)
 
     #####################################
 
@@ -393,6 +401,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.imgFiles = files
         self.imgIndex = 0
         self.loadImgList(self.ui.tableWidget, self.imgFiles)
+        self.initImageDisplay()
 
     def resetFilters(self):
         self.imgFiles = self.getImagePaths()
