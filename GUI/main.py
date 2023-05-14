@@ -284,7 +284,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
                 "Please drag and drop an image of the following type: .txt, .csv"
             )
 
-    def initImageDisplay(self):
+    def initImageDisplay(self, load_manual_checks=False):
         """
         Display first image if one exists
         """
@@ -292,7 +292,15 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         if len(self.imgFiles) > 0:
             self.displayImage(self.imgFiles[self.imgIndex])
             self.setInfButtonState(True)
-            self.loadImgList(self.ui.tableWidget, self.imgFiles)
+
+            # TODO: very ugly code, refactor
+            # this is to prevent the table from being loaded twice
+            # when loading manual checks
+            if load_manual_checks:
+                self.loadImgList(self.ui.tableWidget, self.imgList,
+                                 list(self.classifications.values()))
+            else:
+                self.loadImgList(self.ui.tableWidget, self.imgFiles)
         else:
             self.showErrorMessageBox(
                 "Missing input.", "No images files found in directory.",
@@ -355,19 +363,25 @@ class App(QMainWindow, FileHandling, ErrorHandling):
     #####################################
 
     def loadImgList(self, tableWidget, imgFiles, labels=None):
+        print("table loaded")
         tableWidget.setRowCount(0)
+
+        if labels is None:
+            labels = [None] * len(imgFiles)
+
         for row_nb in range(len(imgFiles)):
             filename = os.path.splitext(
-                os.path.basename(imgFiles[row_nb]))[0]
+                os.path.basename(imgFiles[row_nb])
+            )[0]
+
+            label = str(labels[row_nb]) if labels[row_nb] is not None else ""
 
             tableWidget.insertRow(row_nb)
-            tableWidget.setItem(row_nb, 0, QTableWidgetItem(filename))
-            tableWidget.setItem(row_nb, 1, QTableWidgetItem(""))
 
-        if labels is not None:
-            for row_nb in range(len(labels)):
-                tableWidget.setItem(
-                    row_nb, 1, QTableWidgetItem(str(labels[row_nb])))
+            # set filename
+            tableWidget.setItem(row_nb, 0, QTableWidgetItem(filename))
+            # set infection label
+            tableWidget.setItem(row_nb, 1, QTableWidgetItem(label))
 
     def updateImgList(self, state, msg=""):
         self.ui.tableWidget.setItem(self.imgIndex, 1,
@@ -629,16 +643,14 @@ class App(QMainWindow, FileHandling, ErrorHandling):
     def load_manual_checks(self):
         # load manual checks
         self.classifications = self.classifyThread.classify.get_classifications()
-        self.imgList = self.classifications.keys()
+        self.imgList = list(self.classifications.keys())
         self.imgIndex = 0
 
         # display first image
         self.loadImgList(self.ui.tableWidget, self.imgList,
-                         self.classifications.values())
-        self.initImageDisplay()
+                         list(self.classifications.values()))
 
-        # activate push button
-        self.setTiterButtonState(True)
+        self.initImageDisplay(load_manual_checks=True)
 
     ####################################
 

@@ -57,11 +57,10 @@ class Classify:
 
 
 class ClassifyPlates:
-    """ utils for image classification """
+    """ Classifies all plates in a specified directory """
 
     def __init__(self, params):
         self.params = params
-        print(self.params.model_path)
         self.params.model = tf.keras.models.load_model(params.model_path)
 
         self.plate_dirs = os.listdir(self.params.plates_dir)
@@ -106,8 +105,10 @@ class ClassifyPlates:
 
         # sort dictionary by value (true or false)
         classifications = dict(
-            sorted(self.classifications.items(), key=lambda item: not item[1])
+            sorted(classifications.items(), key=lambda item: not item[1])
         )
+
+        return classifications
 
     def add_manual_checks(self, manual_checks):
         for plate_dir in manual_checks.keys():
@@ -150,9 +151,6 @@ class Plate(ClassifyUtils):
             img for img in os.listdir(self.dir) if any(img in path for path in self.params.img_paths)
         ]
 
-        for image in images:
-            print(image)
-
         plate = []
 
         for row_nb in self.rows:
@@ -194,9 +192,7 @@ class Plate(ClassifyUtils):
                 prediction = self.classify_image(
                     self.image_paths[row_idx][col_idx]
                 )
-                print("classified",
-                      self.image_paths[row_idx][col_idx], prediction[0])
-                      
+
                 result, confidence = prediction
 
                 # append result to row
