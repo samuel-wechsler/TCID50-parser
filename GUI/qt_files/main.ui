@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="classify_tab">
      <attribute name="title">
@@ -235,17 +235,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Training console</string>
-        </property>
-       </widget>
-       <widget class="QTextBrowser" name="textBrowser">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>370</y>
-          <width>941</width>
-          <height>311</height>
-         </rect>
+         <string>Training Parameters</string>
         </property>
        </widget>
        <widget class="QPushButton" name="start_train">
@@ -320,20 +310,271 @@
          <string>trained_models/</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="clear">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
+       <widget class="QLabel" name="label_7">
         <property name="geometry">
          <rect>
-          <x>190</x>
-          <y>690</y>
-          <width>113</width>
-          <height>32</height>
+          <x>230</x>
+          <y>374</y>
+          <width>91</width>
+          <height>16</height>
          </rect>
         </property>
         <property name="text">
-         <string>Clear</string>
+         <string>Learning Rate</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="dropout">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>394</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="value">
+         <double>0.200000000000000</double>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>494</y>
+          <width>71</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Metrics</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="validation_split">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>454</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="value">
+         <double>0.200000000000000</double>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="batch_size">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>394</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>32</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>374</y>
+          <width>60</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Epochs</string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="optimizers">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>454</y>
+          <width>151</width>
+          <height>26</height>
+         </rect>
+        </property>
+        <item>
+         <property name="text">
+          <string>Adam</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>RMSprop</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Adagrad</string>
+         </property>
+        </item>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>374</y>
+          <width>91</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Dropout</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_10">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>434</y>
+          <width>101</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Validation Split</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="accuracy">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>514</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>accuracy</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="recall">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>554</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>recall</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_9">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>434</y>
+          <width>91</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Rotation</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="epochs">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>394</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>12</number>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="rotation">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>454</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="value">
+         <double>0.200000000000000</double>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="precision">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>534</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>precision</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>120</x>
+          <y>374</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Batch Size</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="learning_rate">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>394</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="decimals">
+         <number>4</number>
+        </property>
+        <property name="value">
+         <double>0.000500000000000</double>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_11">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>430</y>
+          <width>71</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Optimizer</string>
         </property>
        </widget>
       </widget>

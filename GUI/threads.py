@@ -70,59 +70,41 @@ class ClassUploadThread(QThread):
 
 
 class TrainThread(threading.Thread):
-    def __init__(self, trainParams, textBrowser, reconnectMethod):
+    def __init__(self, trainParams):
         threading.Thread.__init__(self)
         self.trainParams = trainParams
-        self.textBrowser = textBrowser
-        self.reconnectMethod = reconnectMethod
         self._stop_event = threading.Event()
 
     def start_train_in_terminal(self):
         cwd = os.getcwd()
-        program = 'model_dev/train.py'
+        program = 'train.py'
+        train_args = [
+            '--train-data-file', self.trainParams.train_data_file,
+            '--model-save-file', self.trainParams.model_save_file,
+            '--epochs', str(self.trainParams.epochs),
+            '--validation-split', str(self.trainParams.validation_split),
+            '--learning-rate', str(self.trainParams.learning_rate),
+            '--batch-size', str(self.trainParams.batch_size),
+            '--rotation', str(self.trainParams.rotation),
+            '--optimizer', self.trainParams.optimizer
+        ]
+        train_args.extend(['--metrics', *self.trainParams.metrics])
 
         if platform.system() == 'Windows':
-            subprocess.Popen(['cmd', '/c', 'start', 'cmd', '/k', 'cd', cwd, '&&', 'python', program],
-                             shell=True)
+            cmd = ['cmd', '/c', 'start', 'cmd', '/k', 'cd',
+                   cwd, '&&', 'python', program, *train_args]
+            subprocess.Popen(cmd, shell=True)
         elif platform.system() == 'Linux':
-            subprocess.Popen(['gnome-terminal', '-n', '-x', 'bash', '-c', 'cd "{}" && python {}'.format(cwd, program)],
-                             shell=False)
+            cmd = ['gnome-terminal', '-n', '-x', 'bash', '-c',
+                   'cd "{}" && python {} {}'.format(cwd, program, ' '.join(train_args))]
+            subprocess.Popen(cmd, shell=False)
         elif platform.system() == 'Darwin':
-            subprocess.Popen(['osascript', '-e', 'tell app "Terminal" to do script "cd {} && python {}"'.format(cwd, program)],
-                             shell=False)
+            cmd = ['osascript', '-e', 'tell app "Terminal" to do script "cd {} && python {} {}"'.format(
+                cwd, program, ' '.join(train_args))]
+            subprocess.Popen(cmd, shell=False)
 
     def run(self):
-        # prevent user from restarting training
-        self.reconnectMethod()
-
-        try:
-            self.start_train_in_terminal()
-        # # Only now importing tensorflow to avoid long loading time
-        # self.textBrowser.insertPlainText(f"Importing tensorflow.\n\n")
-        # from model_dev.train import Train
-
-        # # train model on seperate thread
-        # self.textBrowser.insertPlainText(f"Training model.\n\n")
-
-        # try:
-        #     self.train = Train(self.trainParams)
-        #     self.train.train_model(self._stop_event)
-        # except ValueError as e:
-        #     self.textBrowser.insertPlainText(
-        #         f"{40*'*'}\n\n VALUE ERROR: \n {e} \n\n {40*'*'}\n")
-        #     self.textBrowser.insertPlainText(f"\n\nTraining aborted.\n")
-        #     self.stop()
-        # except Exception as e:
-        #     self.textBrowser.insertPlainText(
-        #         f"{40*'*'}\n\n UNKOWN ERROR: \n {e} \n\n {40*'*'}\n")
-        #     self.textBrowser.insertPlainText(f"\n\nTraining aborted.\n")
-        #     self.stop()
-        # else:
-        #     self.textBrowser.insertPlainText(f"\n\nTraining complete.\n\n")
-        except Exception as e:
-            raise e
-        finally:
-            self.reconnectMethod()
+        self.start_train_in_terminal()
 
     def stop(self):
         self._stop_event.set()

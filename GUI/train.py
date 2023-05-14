@@ -1,6 +1,8 @@
 import os
+import sys
+
 import pandas as pd
-from datetime import datetime
+import argparse
 
 # Import tensorflow libraries
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
@@ -9,7 +11,47 @@ tf.get_logger().setLevel('ERROR')  # noqa
 from tensorflow.keras.optimizers.experimental import RMSprop  # type: ignore
 from tensorflow.keras.preprocessing.image import ImageDataGenerator  # type: ignore
 
+from params import TrainParams
+
 IMG_HEIGHT, IMG_WIDTH = 256, 256
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Train a model.')
+    parser.add_argument('--train-data-file', type=str, required=True,
+                        help='path to training data file')
+    parser.add_argument('--model-save-file', type=str, required=True,
+                        help='path to save model')
+    parser.add_argument('--epochs', type=int, default=12,
+                        help='number of epochs')
+    parser.add_argument('--validation-split', type=float, default=0.2,
+                        help='validation split')
+    parser.add_argument('--learning-rate', type=float, default=0.001,
+                        help='learning rate')
+    parser.add_argument('--batch-size', type=int, default=32,
+                        help='batch size')
+    parser.add_argument('--rotation', type=float, default=0.785,
+                        help='rotation angle')
+    parser.add_argument('--optimizer', type=str, default='Adam',
+                        help='optimizer')
+    parser.add_argument('--metrics', type=str, nargs='+', default=['accuracy'],
+                        help='metrics')
+
+    args = parser.parse_args()
+
+    params = TrainParams(train_data_file=args.train_data_file,
+                         model_save_file=args.model_save_file,
+                         epochs=args.epochs,
+                         validation_split=args.validation_split,
+                         learning_rate=args.learning_rate,
+                         batch_size=args.batch_size,
+                         rotation=args.rotation,
+                         optimizer=args.optimizer,
+                         metrics=args.metrics)
+
+    # train the model
+    train = Train(params)
+    train.train_model()
 
 
 class Train:
@@ -95,7 +137,7 @@ class Train:
         with open(save_path, "w") as json_file:
             json_file.write(model_json)
 
-    def train_model(self, stop_event):
+    def train_model(self):
         """
         train the model
         """
@@ -146,21 +188,15 @@ class Train:
                                                           save_best_only=True)
         cb = [earlystopper, checkpointer]
 
-        for epoch in range(self.train_params.epochs):
-            # Check if training should stop early
-            if stop_event is not None and stop_event.is_set():
-                print(f"\n\nTraining stopped early by user.")
-                break
-
-            # Train for one epoch
-            history = model.fit(train_generator,
-                                validation_data=validation_generator,
-                                epochs=self.train_params.epochs,
-                                callbacks=cb,
-                                verbose=2)
+        history = model.fit(train_generator,
+                            validation_data=validation_generator,
+                            epochs=self.train_params.epochs,
+                            callbacks=cb,
+                            verbose=1)
 
         # save model architecture as json file
         self.save_model_json(model)
 
 
-print("Hellloo")
+if __name__ == "__main__":
+    main()

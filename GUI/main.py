@@ -17,71 +17,10 @@ import qdarktheme
 
 from filehandling import FileHandling
 from errorhandling import ErrorHandling
+from params import *
 from dialogs import *
 
 MainUI, QtBaseclass = uic.loadUiType("qt_files/main.ui")
-
-
-class ConsoleOutputRedirector:
-    def __init__(self, textBrowser):
-        self.textBrowser = textBrowser
-
-    def write(self, text):
-        self.textBrowser.insertPlainText(text)
-        self.textBrowser.verticalScrollBar().setValue(
-            self.textBrowser.verticalScrollBar().maximum()
-        )
-
-    def flush(self):
-        pass  # do nothing
-
-
-class AutomateConfig:
-    """ Configuration object for ClassifyThread and ClassifyPlates """
-
-    def __init__(self, plates_dir, model_path, img_paths, classified, row_range, col_range, serial_dilution, initial_dilution, particle_to_pfu, classify_completed):
-        """
-        plates_dir: directory containing plate images
-        model_path: path to model file
-        imgs: list of image files (to be classified, some images in dir may have been filtered out)
-        classified: dict of classified images with bool values
-        """
-        self.plates_dir = plates_dir
-        self.model_path = model_path
-        self.model = None
-        self.img_paths = img_paths
-        self.classified = classified
-        self.row_range = row_range
-        self.col_range = col_range
-        self.serial_dilution = serial_dilution
-        self.initial_dilution = initial_dilution
-        self.particle_to_pfu = particle_to_pfu
-        self.classify_completed = classify_completed
-
-
-class TrainParams:
-    """ Configuration object to specfiy training parameters """
-
-    def __init__(self, train_data_file, model_save_file, epochs=12, validation_split=0.2, learning_rate=0.001, batch_size=32, rotation=np.pi/4, optimizer="Adam", metrics=["accuracy"]):
-        """
-        train_data_file: path to training data file
-        model_save_file: path to save model
-        epochs: number of epochs
-        learning_rate: learning rate
-        batch_size: batch size
-        loss: loss function
-        optimizer: optimizer
-        metrics: metrics
-        """
-        self.train_data_file = train_data_file
-        self.model_save_file = model_save_file
-        self.epochs = epochs
-        self.validation_split = validation_split
-        self.learning_rate = learning_rate
-        self.batch_size = batch_size
-        self.rotation = rotation
-        self.optimizer = optimizer
-        self.metrics = metrics
 
 
 class App(QMainWindow, FileHandling, ErrorHandling):
@@ -113,7 +52,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
         self.train_data_file = None
         self.trainParams = None
-        self.trainingStarted = False
 
     def _connectMenubar(self):
         # Connect File actions
@@ -146,17 +84,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
         # Connect push button from second tab
         self.ui.start_train.clicked.connect(self.startTrainModel)
-        self.ui.clear.clicked.connect(self.clearTrainLog)
-
-    def _reconnectStartTrainButton(self):
-        self.ui.start_train.clicked.disconnect()
-
-        if self.trainingStarted:
-            self.ui.start_train.clicked.connect(self.stopTrainModel)
-            self.ui.start_train.setText("Stop")
-        else:
-            self.ui.start_train.clicked.connect(self.startTrainModel)
-            self.ui.start_train.setText("Start")
 
     def _connectListWidget(self):
         self.ui.tableWidget.clicked.connect(self.goToListImage)
@@ -164,6 +91,24 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
     def _connectLineEdit(self):
         self.ui.lineEdit.editingFinished.connect(self.setModelSaveFile)
+
+    def _connectSpinBox(self):
+        # Connect QSpinBoxes
+        self.ui.epochs.valueChanged.connect(self.setEpochs)
+        self.ui.batch_size.valueChanged.connect(self.setBatchSize)
+        self.ui.learning_rate.valueChanged.connect(self.setLearningRate)
+        self.ui.validation_split.valueChanged.connect(self.setValidationSplit)
+        self.ui.rotation.valueChanged.connect(self.setRotation)
+
+    def _connectComboBox(self):
+        # Connect QComboBoxes
+        self.ui.optimizer.currentIndexChanged.connect(self.setOptimizer)
+
+    def _connectCheckBox(self):
+        # Connect QCheckBoxes
+        self.ui.accuracy.stateChanged.connect(self.setMetrics)
+        self.ui.precision.stateChanged.connect(self.setMetrics)
+        self.ui.recall.stateChanged.connect(self.setMetrics)
 
     def setShortcuts(self):
         """
@@ -526,9 +471,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
                 if not ans:
                     return
 
-            # Redirect the console output to the QPlainTextEdit widget
-            sys.stdout = ConsoleOutputRedirector(self.ui.textBrowser)
-
             # get training parameters
             self.trainParams = self.trainParams or TrainParams(
                 self.train_data_file,
@@ -536,11 +478,8 @@ class App(QMainWindow, FileHandling, ErrorHandling):
             )
 
             # train model in seperate thread
-            self.train_thread = TrainThread(self.trainParams,
-                                            self.ui.textBrowser,
-                                            self._reconnectStartTrainButton)
+            self.train_thread = TrainThread(self.trainParams)
             self.train_thread.start()
-            self.trainingStarted = True
 
         else:
             self.showErrorMessageBox(
@@ -549,34 +488,33 @@ class App(QMainWindow, FileHandling, ErrorHandling):
                 "Please select a training data file and a save file."
             )
 
-    def stopTrainModel(self):
-        """
-        slot for push button "Stop Training" of second tab
-        """
-        self.train_thread.stop()
-        self.ui.start_train.setEnabled(False)
-        self.trainingStarted = False
+    def setEpochs(self):
+        self.trainParams.epochs = int(self.ui.epochs.value())
 
-        # wait for thread to finish
-        self.train_thread.join()
+    def setBatchSize(self):
+        self.trainParams.batch_size = int(self.ui.batch_size.value())
 
-        # reconnect push button
-        self._reconnectStartTrainButton()
-        self.ui.clear.setEnabled(True)
+    def setLearningRate(self):
+        self.trainParams.learning_rate = float(self.ui.learning_rate.value())
 
-    def clearTrainLog(self):
-        self.ui.textBrowser.clear()
-        self.ui.clear.setEnabled(False)
-        self.ui.start_train.setEnabled(True)
+    def setOptimizer(self):
+        self.trainParams.optimizer = self.ui.optimizer.currentText()
 
-    def update_log(self, text):
-        self.ui.textBrowser.append(text)
+    def setValidationSplit(self):
+        self.trainParams.validation_split = float(
+            self.ui.validation_split.value())
 
-    def setTrainParams(self):
-        """ start dialog to set training parameters """
-        self.trainParamsDlg = TrainParamsDlg()
-        self.trainParamsDlg.exec()
-        self.trainParams = self.trainParamsDlg.getParams()
+    def setRotation(self):
+        self.trainParams.rotation = int(self.ui.rotation.value())
+
+    def setMetrics(self):
+        self.trainParams.metrics = []
+        if self.ui.accuracy.isChecked():
+            self.trainParams.metrics.append("accuracy")
+        if self.ui.precision.isChecked():
+            self.trainParams.metrics.append("precision")
+        if self.ui.recall.isChecked():
+            self.trainParams.metrics.append("recall")
 
     def setTrainDataFile(self, path):
         """
@@ -706,18 +644,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
             )
 
             if reply == QMessageBox.Yes:
-                event.accept()
-            else:
-                event.ignore()
-
-        elif self.trainingStarted:
-            reply = QMessageBox.question(
-                self, 'Messag', "Training in progress. Are you sure you want to quit?",
-                QMessageBox.Yes | QMessageBox.No
-            )
-
-            if reply == QMessageBox.Yes:
-                self.stopTrainModel()
                 event.accept()
             else:
                 event.ignore()
