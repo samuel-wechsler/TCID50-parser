@@ -77,50 +77,32 @@ class TrainThread(threading.Thread):
         self.reconnectMethod = reconnectMethod
         self._stop_event = threading.Event()
 
-    def start_train_in_terminal(self):
-        cwd = os.getcwd()
-        program = 'model_dev/train.py'
-
-        if platform.system() == 'Windows':
-            subprocess.Popen(['cmd', '/c', 'start', 'cmd', '/k', 'cd', cwd, '&&', 'python', program],
-                             shell=True)
-        elif platform.system() == 'Linux':
-            subprocess.Popen(['gnome-terminal', '-n', '-x', 'bash', '-c', 'cd "{}" && python {}'.format(cwd, program)],
-                             shell=False)
-        elif platform.system() == 'Darwin':
-            subprocess.Popen(['osascript', '-e', 'tell app "Terminal" to do script "cd {} && python {}"'.format(cwd, program)],
-                             shell=False)
-
     def run(self):
         # prevent user from restarting training
         self.reconnectMethod()
 
+        # Only now importing tensorflow to avoid long loading time
+        self.textBrowser.insertPlainText(f"Importing tensorflow.\n\n")
+        from model_dev.train import Train
+
+        # train model on seperate thread
+        self.textBrowser.insertPlainText(f"Training model.\n\n")
+
         try:
-            self.start_train_in_terminal()
-        # # Only now importing tensorflow to avoid long loading time
-        # self.textBrowser.insertPlainText(f"Importing tensorflow.\n\n")
-        # from model_dev.train import Train
-
-        # # train model on seperate thread
-        # self.textBrowser.insertPlainText(f"Training model.\n\n")
-
-        # try:
-        #     self.train = Train(self.trainParams)
-        #     self.train.train_model(self._stop_event)
-        # except ValueError as e:
-        #     self.textBrowser.insertPlainText(
-        #         f"{40*'*'}\n\n VALUE ERROR: \n {e} \n\n {40*'*'}\n")
-        #     self.textBrowser.insertPlainText(f"\n\nTraining aborted.\n")
-        #     self.stop()
-        # except Exception as e:
-        #     self.textBrowser.insertPlainText(
-        #         f"{40*'*'}\n\n UNKOWN ERROR: \n {e} \n\n {40*'*'}\n")
-        #     self.textBrowser.insertPlainText(f"\n\nTraining aborted.\n")
-        #     self.stop()
-        # else:
-        #     self.textBrowser.insertPlainText(f"\n\nTraining complete.\n\n")
+            self.train = Train(self.trainParams)
+            self.train.train_model(self._stop_event)
+        except ValueError as e:
+            self.textBrowser.insertPlainText(
+                f"{40*'*'}\n\n VALUE ERROR: \n {e} \n\n {40*'*'}\n")
+            self.textBrowser.insertPlainText(f"\n\nTraining aborted.\n")
+            self.stop()
         except Exception as e:
-            raise e
+            self.textBrowser.insertPlainText(
+                f"{40*'*'}\n\n UNKOWN ERROR: \n {e} \n\n {40*'*'}\n")
+            self.textBrowser.insertPlainText(f"\n\nTraining aborted.\n")
+            self.stop()
+        else:
+            self.textBrowser.insertPlainText(f"\n\nTraining complete.\n\n")
         finally:
             self.reconnectMethod()
 
