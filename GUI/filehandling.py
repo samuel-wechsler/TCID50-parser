@@ -30,12 +30,22 @@ class FileHandling:
 
     def saveResults(self, results):
         logfile = open(self.saveFile, "w")
-
+        logfile.write(f"file;label\n")
         for key in results.keys():
             logfile.write(f"{key};{results[key]}\n")
+        logfile.close()
 
     def isImageFile(self, path):
         return os.path.isfile(path) and any([ext in path for ext in self.imgExtensions])
+
+    def isModelFile(self, path):
+        ext = os.path.splitext(path)[1]
+        return ext == ".h5"
+
+    def isTxtFile(self, path):
+        txt_exts = [".csv", ".txt"]
+        ext = os.path.splitext(path)[1]
+        return os.path.isfile(path) and ext in txt_exts
 
     def openImage(self, path):
         imageViewerFromCommandLine = {'linux': 'xdg-open',
