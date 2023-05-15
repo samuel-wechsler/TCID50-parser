@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1003</width>
-    <height>805</height>
+    <height>797</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -188,7 +188,7 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>-10</y>
+        <y>0</y>
         <width>991</width>
         <height>741</height>
        </rect>
@@ -313,8 +313,8 @@
        <widget class="QLabel" name="label_7">
         <property name="geometry">
          <rect>
-          <x>230</x>
-          <y>374</y>
+          <x>360</x>
+          <y>380</y>
           <width>91</width>
           <height>16</height>
          </rect>
@@ -326,14 +326,20 @@
        <widget class="QDoubleSpinBox" name="dropout">
         <property name="geometry">
          <rect>
-          <x>330</x>
-          <y>394</y>
+          <x>470</x>
+          <y>400</y>
           <width>81</width>
           <height>24</height>
          </rect>
         </property>
         <property name="decimals">
          <number>2</number>
+        </property>
+        <property name="maximum">
+         <double>1.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.050000000000000</double>
         </property>
         <property name="value">
          <double>0.200000000000000</double>
@@ -342,8 +348,8 @@
        <widget class="QLabel" name="label_5">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>494</y>
+          <x>30</x>
+          <y>440</y>
           <width>71</width>
           <height>20</height>
          </rect>
@@ -352,27 +358,11 @@
          <string>Metrics</string>
         </property>
        </widget>
-       <widget class="QDoubleSpinBox" name="validation_split">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>454</y>
-          <width>81</width>
-          <height>24</height>
-         </rect>
-        </property>
-        <property name="decimals">
-         <number>2</number>
-        </property>
-        <property name="value">
-         <double>0.200000000000000</double>
-        </property>
-       </widget>
        <widget class="QSpinBox" name="batch_size">
         <property name="geometry">
          <rect>
-          <x>120</x>
-          <y>394</y>
+          <x>130</x>
+          <y>400</y>
           <width>81</width>
           <height>24</height>
          </rect>
@@ -387,8 +377,8 @@
        <widget class="QLabel" name="label">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>374</y>
+          <x>30</x>
+          <y>380</y>
           <width>60</width>
           <height>16</height>
          </rect>
@@ -400,8 +390,8 @@
        <widget class="QComboBox" name="optimizers">
         <property name="geometry">
          <rect>
-          <x>240</x>
-          <y>454</y>
+          <x>160</x>
+          <y>464</y>
           <width>151</width>
           <height>26</height>
          </rect>
@@ -425,8 +415,8 @@
        <widget class="QLabel" name="label_8">
         <property name="geometry">
          <rect>
-          <x>330</x>
-          <y>374</y>
+          <x>470</x>
+          <y>380</y>
           <width>91</width>
           <height>16</height>
          </rect>
@@ -438,8 +428,8 @@
        <widget class="QLabel" name="label_10">
         <property name="geometry">
          <rect>
-          <x>120</x>
-          <y>434</y>
+          <x>230</x>
+          <y>380</y>
           <width>101</width>
           <height>16</height>
          </rect>
@@ -451,8 +441,8 @@
        <widget class="QCheckBox" name="accuracy">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>514</y>
+          <x>30</x>
+          <y>460</y>
           <width>161</width>
           <height>20</height>
          </rect>
@@ -467,8 +457,8 @@
        <widget class="QCheckBox" name="recall">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>554</y>
+          <x>30</x>
+          <y>500</y>
           <width>161</width>
           <height>20</height>
          </rect>
@@ -480,8 +470,8 @@
        <widget class="QLabel" name="label_9">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>434</y>
+          <x>580</x>
+          <y>380</y>
           <width>91</width>
           <height>16</height>
          </rect>
@@ -493,8 +483,8 @@
        <widget class="QSpinBox" name="epochs">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>394</y>
+          <x>30</x>
+          <y>400</y>
           <width>81</width>
           <height>24</height>
          </rect>
@@ -509,14 +499,20 @@
        <widget class="QDoubleSpinBox" name="rotation">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>454</y>
+          <x>580</x>
+          <y>400</y>
           <width>81</width>
           <height>24</height>
          </rect>
         </property>
         <property name="decimals">
          <number>2</number>
+        </property>
+        <property name="maximum">
+         <double>3.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.050000000000000</double>
         </property>
         <property name="value">
          <double>0.200000000000000</double>
@@ -525,8 +521,8 @@
        <widget class="QCheckBox" name="precision">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>534</y>
+          <x>30</x>
+          <y>480</y>
           <width>161</width>
           <height>20</height>
          </rect>
@@ -538,8 +534,8 @@
        <widget class="QLabel" name="label_6">
         <property name="geometry">
          <rect>
-          <x>120</x>
-          <y>374</y>
+          <x>130</x>
+          <y>380</y>
           <width>71</width>
           <height>16</height>
          </rect>
@@ -551,14 +547,23 @@
        <widget class="QDoubleSpinBox" name="learning_rate">
         <property name="geometry">
          <rect>
-          <x>230</x>
-          <y>394</y>
+          <x>360</x>
+          <y>400</y>
           <width>81</width>
           <height>24</height>
          </rect>
         </property>
         <property name="decimals">
          <number>4</number>
+        </property>
+        <property name="minimum">
+         <double>0.000100000000000</double>
+        </property>
+        <property name="maximum">
+         <double>5.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.000500000000000</double>
         </property>
         <property name="value">
          <double>0.000500000000000</double>
@@ -567,14 +572,68 @@
        <widget class="QLabel" name="label_11">
         <property name="geometry">
          <rect>
-          <x>240</x>
-          <y>430</y>
+          <x>160</x>
+          <y>440</y>
           <width>71</width>
           <height>20</height>
          </rect>
         </property>
         <property name="text">
          <string>Optimizer</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="validation_split">
+        <property name="geometry">
+         <rect>
+          <x>230</x>
+          <y>400</y>
+          <width>81</width>
+          <height>24</height>
+         </rect>
+        </property>
+        <property name="decimals">
+         <number>2</number>
+        </property>
+        <property name="maximum">
+         <double>1.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.050000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.200000000000000</double>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="horizontal_flipped">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>440</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>horizontal flipped</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="vertical_fliped">
+        <property name="geometry">
+         <rect>
+          <x>580</x>
+          <y>460</y>
+          <width>161</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>vertical flipped</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </widget>

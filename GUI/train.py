@@ -36,6 +36,8 @@ def main():
                         help='optimizer')
     parser.add_argument('--metrics', type=str, nargs='+', default=['accuracy'],
                         help='metrics')
+    parser.add_argument('--horiz-flip', type=bool)
+    parser.add_argument('--vert-flip', type=bool)
 
     args = parser.parse_args()
 
@@ -47,7 +49,9 @@ def main():
                          batch_size=args.batch_size,
                          rotation=args.rotation,
                          optimizer=args.optimizer,
-                         metrics=args.metrics)
+                         metrics=args.metrics,
+                         horiz_flip=args.horiz_flip,
+                         vert_flip=args.vert_flip)
 
     # train the model
     train = Train(params)
@@ -145,10 +149,8 @@ class Train:
         # Define the ImageDataGenerator
         datagen = ImageDataGenerator(rescale=1./255,
                                      rotation_range=self.train_params.rotation,
-                                     horizontal_flip=bool(
-                                         self.train_params.rotation),
-                                     vertical_flip=bool(
-                                         self.train_params.rotation),
+                                     horizontal_flip=self.train_params.horiz_flip,
+                                     vertical_flip=self.train_params.vert_flip,
                                      validation_split=self.train_params.validation_split)
 
         df = self.get_class_dataframe()

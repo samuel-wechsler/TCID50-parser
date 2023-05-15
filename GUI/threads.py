@@ -70,6 +70,8 @@ class ClassUploadThread(QThread):
 
 
 class TrainThread(threading.Thread):
+    # TODO: consider to refactor at some point
+    # since thread isn't really needed
     def __init__(self, trainParams):
         threading.Thread.__init__(self)
         self.trainParams = trainParams
@@ -86,7 +88,9 @@ class TrainThread(threading.Thread):
             '--learning-rate', str(self.trainParams.learning_rate),
             '--batch-size', str(self.trainParams.batch_size),
             '--rotation', str(self.trainParams.rotation),
-            '--optimizer', self.trainParams.optimizer
+            '--optimizer', self.trainParams.optimizer,
+            '--horiz-flip', str(self.trainParams.horiz_flip),
+            '--vert-flip', str(self.trainParams.vert_flip)
         ]
         train_args.extend(['--metrics', *self.trainParams.metrics])
 

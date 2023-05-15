@@ -78,6 +78,7 @@ class Uploader:
         """
         uploads a json file which describes the model architecture
         """
+        # TODO : upload training parameters
         with open(model_json_path, "r") as json_file:
             file_contents = json_file.read()
             file_metadata = {'name': os.path.basename(model_json_path),

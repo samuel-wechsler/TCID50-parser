@@ -27,7 +27,7 @@ class AutomateConfig:
 class TrainParams:
     """ Configuration object to specfiy training parameters """
 
-    def __init__(self, train_data_file, model_save_file, epochs=12, validation_split=0.2, learning_rate=0.001, batch_size=32, rotation=0.2, optimizer="Adam", metrics=["accuracy"]):
+    def __init__(self, train_data_file, model_save_file, epochs=12, validation_split=0.2, learning_rate=0.001, batch_size=32, rotation=0.2, optimizer="Adam", metrics=["accuracy"], horiz_flip=True, vert_flip=True):
         """
         train_data_file: path to training data file
         model_save_file: path to save model
@@ -47,3 +47,5 @@ class TrainParams:
         self.rotation = rotation
         self.optimizer = optimizer
         self.metrics = metrics
+        self.horiz_flip = horiz_flip
+        self.vert_flip = vert_flip

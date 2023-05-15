@@ -36,6 +36,9 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self._connectPushButtons()
         self._connectListWidget()
         self._connectLineEdit()
+        self._connectSpinBox()
+        self._connectComboBox()
+        self._connectCheckBox()
 
         # set shortcuts
         self.setShortcuts()
@@ -50,8 +53,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.imgFiles = []
         self.classifications = dict()
 
-        self.train_data_file = None
-        self.trainParams = None
+        self.trainParams = TrainParams(None, None)
 
     def _connectMenubar(self):
         # Connect File actions
@@ -102,7 +104,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
     def _connectComboBox(self):
         # Connect QComboBoxes
-        self.ui.optimizer.currentIndexChanged.connect(self.setOptimizer)
+        self.ui.optimizers.currentIndexChanged.connect(self.setOptimizer)
 
     def _connectCheckBox(self):
         # Connect QCheckBoxes
@@ -476,8 +478,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         # get current model save file
         self.setModelSaveFile()
 
-        if not self.isModelFile(self.model_save_file):
-            print(self.model_save_file)
+        if not self.isModelFile(self.trainParams.model_save_file):
             self.showErrorMessageBox(
                 "Error",
                 "Invalid file type",
@@ -485,20 +486,14 @@ class App(QMainWindow, FileHandling, ErrorHandling):
             )
             return
 
-        if self.train_data_file is not None and self.model_save_file is not None:
+        if self.trainParams.train_data_file is not None and self.trainParams.model_save_file is not None:
             # check if file exists
-            if os.path.isfile(self.model_save_file):
+            if os.path.isfile(self.trainParams.model_save_file):
                 ans = self.askMessageBox(
                     "Warning", "Model file already exists. Overwrite?"
                 )
                 if not ans:
                     return
-
-            # get training parameters
-            self.trainParams = self.trainParams or TrainParams(
-                self.train_data_file,
-                self.model_save_file,
-            )
 
             # train model in seperate thread
             self.train_thread = TrainThread(self.trainParams)
@@ -521,7 +516,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.trainParams.learning_rate = float(self.ui.learning_rate.value())
 
     def setOptimizer(self):
-        self.trainParams.optimizer = self.ui.optimizer.currentText()
+        self.trainParams.optimizer = self.ui.optimizers.currentText()
 
     def setValidationSplit(self):
         self.trainParams.validation_split = float(
@@ -529,6 +524,12 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
     def setRotation(self):
         self.trainParams.rotation = int(self.ui.rotation.value())
+
+    def setHorizontalFlip(self):
+        self.trainParams.horiz_flip = self.ui.horizontal_flip.isChecked()
+
+    def setVerticalFlip(self):
+        self.trainParams.vert_flip = self.ui.vertical_flip.isChecked()
 
     def setMetrics(self):
         self.trainParams.metrics = []
@@ -543,11 +544,12 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         """
         Load training data from file and display in table widget.
         """
-        self.train_data_file = path
+        self.trainParams.train_data_file = path
 
-        if self.train_data_file is not None:
+        if self.trainParams.train_data_file is not None:
             try:
-                df = pd.read_csv(self.train_data_file, sep=";", header=0)
+                df = pd.read_csv(self.trainParams.train_data_file,
+                                 sep=";", header=0)
                 self.loadImgList(self.ui.tableWidget_2,
                                  df["files"].tolist(), df["labels"].tolist())
             # TODO: add more specific error handling (e.g., wrong format, columns, etc.)
@@ -582,7 +584,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
             filepath = os.path.join(dirname, filename)
 
-        self.model_save_file = filepath
+        self.trainParams.model_save_file = filepath
 
         if update:
             self.setLineEditText(filepath)

@@ -18,7 +18,7 @@ class ClassifyUtils:
     def __init__(self, model):
         self.model = model
 
-    def classify_image(self, image_path, classnames=[1, 0]):
+    def classify_image(self, image_path, classnames=[0, 1]):
         """ Classify an image with a specified model """
         prediction = self.model.predict(
             self.load_and_prep_image(image_path), verbose=0
@@ -30,6 +30,7 @@ class ClassifyUtils:
 
         else:
             ### PROBABILY STILL BUGGY ###
+            print(prediction[0][0])
             return classnames[int(prediction[0][0] >= 0.5)], 2*(max(prediction[0][0], 1 - prediction[0][0]) - 0.5)
 
     def load_and_prep_image(self, image_path):
@@ -45,9 +46,15 @@ class ClassifyUtils:
         else:
             img = tf.image.decode_image(img, channels=3)
 
+        # Rescale the image
+        img = tf.cast(img, tf.float32)
+        img /= 255.0
+
         # Resize the image
         img = tf.image.resize(img, size=[IMG_SHAPE, IMG_SHAPE])
         img = tf.expand_dims(img, axis=0)
+
+        print(img.shape)
 
         return img
 
@@ -87,6 +94,7 @@ class ClassifyPlates:
         for plate in self.plates:
             plate.classify()
             plate.display()
+            # TODO: refine progress updates, currently only updates after plate is classified
             # emit progress as percentage
             thread.classify_complete.emit(round(c / len(self.plates) * 100))
             c += 1
@@ -194,6 +202,9 @@ class Plate(ClassifyUtils):
                 )
 
                 result, confidence = prediction
+
+                # print(os.path.basename(
+                #     self.image_paths[row_idx][col_idx]), result, confidence)
 
                 # append result to row
                 classified_row.append(result)
