@@ -13,7 +13,6 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
 import tensorflow as tf
 tf.get_logger().setLevel('ERROR')  # noqa
 from tensorflow.keras.optimizers.experimental import RMSprop  # type: ignore
-from tensorflow.keras.preprocessing.image import ImageDataGenerator  # type: ignore
 
 from params import TrainParams
 
@@ -92,9 +91,20 @@ class Train:
         The output layer should have `NUM_CATEGORIES` units, one for each category.
         """
 
+        # Data augmentation
+        data_augmentation = tf.keras.Sequential([
+            tf.keras.layers.experimental.preprocessing.RandomFlip(
+                "horizontal_and_vertical") if self.train_params.horiz_flip and self.train_params.vert_flip else None,
+            tf.keras.layers.experimental.preprocessing.RandomRotation(
+                self.train_params.rotation) if self.train_params.rotation else None,
+        ])
+
         # Create a convolutional neural network
         model = tf.keras.models.Sequential(
             [
+                # Normalize input data
+                tf.keras.layers.Rescaling(1./255),
+
                 # Perform convolution and pooling five times
                 tf.keras.layers.Conv2D(16, (3, 3), activation="relu",
                                        input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
@@ -110,7 +120,7 @@ class Train:
                 tf.keras.layers.Flatten(),
 
                 # Add hidden layers with dropout
-                tf.keras.layers.Dense(128, activation="relu"),
+                tf.keras.layers.Dense(512, activation="relu"),
 
                 # Add an output layer with output units for all 2 categories
                 tf.keras.layers.Dense(1, activation="sigmoid")

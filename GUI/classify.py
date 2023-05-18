@@ -46,15 +46,9 @@ class ClassifyUtils:
         else:
             img = tf.image.decode_image(img, channels=3)
 
-        # Rescale the image
-        img = tf.cast(img, tf.float32)
-        img /= 255.0
-
         # Resize the image
         img = tf.image.resize(img, size=[IMG_SHAPE, IMG_SHAPE])
         img = tf.expand_dims(img, axis=0)
-
-        print(img.shape)
 
         return img
 

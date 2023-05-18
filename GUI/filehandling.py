@@ -69,7 +69,7 @@ class FileHandling:
 
     def saveResults(self, results):
         logfile = open(self.saveFile, "w")
-        logfile.write(f"file;label\n")
+        logfile.write(f"images;labels\n")
         for key in results.keys():
             logfile.write(f"{key};{results[key]}\n")
         logfile.close()
