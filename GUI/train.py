@@ -64,9 +64,22 @@ class Train:
 
     def get_class_dataframe(self):
         df = pd.read_csv(self.train_params.train_data_file, sep=";",
-                         header=0, names=["file", "label"])
-        df["label"] = df["label"].astype(str)
+                         header=0, names=["files", "labels"])
+        df["labels"] = df["labels"].astype(str)
         return df
+
+    def check_class_imbalance(self):
+        # Read the CSV file containing the training data
+        df = self.get_class_dataframe()
+
+        # Get the counts for each class
+        counts = df['labels'].value_counts()
+
+        # Calculate the class imbalance ratio
+        imbalance_ratio = counts.min() / counts.max()
+
+        # Print the class imbalance ratio
+        print(f"Class imbalance ratio: {imbalance_ratio:0.2f}")
 
     def get_optimizer(self):
         if self.train_params.optimizer == "RMSprop":
@@ -97,13 +110,13 @@ class Train:
                 tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
                 tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
 
-                tf.keras.layers.Dropout(0.2),
+                tf.keras.layers.Dropout(self.train_params.dropout),
 
                 # Flatten units
                 tf.keras.layers.Flatten(),
 
                 # Add hidden layers with dropout
-                tf.keras.layers.Dense(128, activation="relu"),
+                tf.keras.layers.Dense(512, activation="relu"),
 
                 # Add an output layer with output units for all 2 categories
                 tf.keras.layers.Dense(1, activation="sigmoid")
@@ -155,12 +168,15 @@ class Train:
 
         df = self.get_class_dataframe()
 
+        # Check class imbalance
+        self.check_class_imbalance()
+
         # Create the ImageDataGenerator from the DataFrame
         train_generator = datagen.flow_from_dataframe(
             dataframe=df,
-            x_col='file',
-            y_col='label',
-            target_size=(IMG_HEIGHT, IMG_HEIGHT),  # Set the target image size
+            x_col='files',
+            y_col='labels',
+            target_size=(IMG_HEIGHT, IMG_WIDTH),  # Set the target image size
             batch_size=self.train_params.batch_size,
             class_mode='binary',
             subset='training'
@@ -169,9 +185,9 @@ class Train:
         # Create a separate ImageDataGenerator for the validation set
         validation_generator = datagen.flow_from_dataframe(
             dataframe=df,
-            x_col='file',
-            y_col='label',
-            target_size=(IMG_HEIGHT, IMG_HEIGHT),
+            x_col='files',
+            y_col='labels',
+            target_size=(IMG_HEIGHT, IMG_WIDTH),
             batch_size=self.train_params.batch_size,
             class_mode='binary',
             subset='validation'

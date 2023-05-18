@@ -30,9 +30,9 @@ class FileHandling:
 
     def saveResults(self, results):
         logfile = open(self.saveFile, "w")
-        logfile.write(f"file;label\n")
+        logfile.write(f"files;labels\n")
         for key in results.keys():
-            logfile.write(f"{key};{results[key]}\n")
+            logfile.write(f"{key};{int(results[key])}\n")
         logfile.close()
 
     def isImageFile(self, path):

@@ -1,9 +1,9 @@
-from google.oauth2 import service_account
+from google.oauth2 import credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload, MediaIoBaseUpload
 
-from concurrent.futures import ThreadPoolExecutor
 
 import io
 from PIL import Image
@@ -15,22 +15,32 @@ from datetime import datetime
 
 class Uploader:
     def __init__(self):
-        # Set the path to your service account credentials JSON file
-        self.creds_path = 'credentials/credentials.json'
-
         # Set the ID of the folder where you want to store the uploaded images
         self.folder_id = '1p9i5Vwkdj-tvDqcafcUi56e-u4YAb1iK'
 
         # Authenticate your application with the Google Drive API
         self.creds = None
-        if os.path.exists(self.creds_path):
-            self.creds = service_account.Credentials.from_service_account_file(
-                self.creds_path,
-                scopes=['https://www.googleapis.com/auth/drive']
-            )
+        self.authenticate()
 
         # Create a service object for interacting with the Google Drive API
         self.drive_service = build('drive', 'v3', credentials=self.creds)
+
+    def authenticate(self):
+        # Check if the credentials file exists
+        if os.path.exists(self.creds_path):
+            # Load the existing credentials
+            self.creds = credentials.Credentials.from_authorized_user_file(
+                self.creds_path
+            )
+        else:
+            # If the credentials file does not exist, initiate the OAuth 2.0 flow
+            flow = InstalledAppFlow.from_client_secrets_file(
+                'client_secrets.json', ['https://www.googleapis.com/auth/drive'])
+            self.creds = flow.run_local_server(port=0)
+
+            # Save the credentials for future use
+            with open(self.creds_path, 'w') as creds_file:
+                creds_file.write(self.creds.to_json())
 
     def create_image_dir(self, dirname):
         """

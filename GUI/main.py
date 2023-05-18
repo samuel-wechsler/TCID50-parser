@@ -365,7 +365,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
     #####################################
 
     def loadImgList(self, tableWidget, imgFiles, labels=None):
-        print("table loaded")
         tableWidget.setRowCount(0)
 
         if labels is None:
@@ -521,6 +520,9 @@ class App(QMainWindow, FileHandling, ErrorHandling):
     def setValidationSplit(self):
         self.trainParams.validation_split = float(
             self.ui.validation_split.value())
+
+    def setDropout(self):
+        self.trainParams.dropout = float(self.ui.dropout.value())
 
     def setRotation(self):
         self.trainParams.rotation = int(self.ui.rotation.value())
