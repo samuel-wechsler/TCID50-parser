@@ -70,3 +70,19 @@ class ErrorHandling(object):
         if ans == QMessageBox.Cancel:
             return False
         return True
+
+    def askImproveMessageBox(self, title, message, details=""):
+        self.msg = QMessageBox()
+        self.msg.setWindowTitle(title)
+        self.msg.setText(message)
+        self.msg.setDetailedText(details)
+        self.msg.setStandardButtons(
+            QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel
+        )
+        ans = self.msg.exec()
+        if ans == QMessageBox.Cancel:
+            return None
+        elif ans == QMessageBox.Yes:
+            return True
+        elif ans == QMessageBox.No:
+            return False

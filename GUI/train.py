@@ -24,7 +24,8 @@ def main():
     parser.add_argument('--train-data-file', type=str, required=True,
                         help='path to training data file')
     parser.add_argument('--model-save-file', type=str, required=True,
-                        help='path to save model')
+                        help='path to save model'),
+    parser.add_argument('--train-mode', type=str, default="replace"),
     parser.add_argument('--epochs', type=int, default=12,
                         help='number of epochs')
     parser.add_argument('--validation-split', type=float, default=0.2,
@@ -84,7 +85,7 @@ class Train:
         if self.train_params.optimizer == "Adagrad":
             return tf.keras.optimizers.Adagrad(learning_rate=self.train_params.learning_rate)
 
-    def get_model(self):
+    def get_model(self, pretrained_model=None):
         """
         Returns a compiled convolutional neural network model. Assume that the
         `input_shape` of the first layer is `(IMG_WIDTH, IMG_HEIGHT, 3)`.
@@ -93,39 +94,41 @@ class Train:
 
         # Data augmentation
         data_augmentation = tf.keras.Sequential([
-            tf.keras.layers.experimental.preprocessing.RandomFlip(
-                "horizontal_and_vertical") if self.train_params.horiz_flip and self.train_params.vert_flip else None,
-            tf.keras.layers.experimental.preprocessing.RandomRotation(
-                self.train_params.rotation) if self.train_params.rotation else None,
+            tf.keras.layers.RandomFlip("horizontal_and_vertical" if (self.train_params.horiz_flip and self.train_params.vert_flip)
+                                       else "horizontal" if self.train_params.horiz_flip else "vertical" if self.train_params.vert_flip else None),
         ])
 
         # Create a convolutional neural network
-        model = tf.keras.models.Sequential(
-            [
-                # Normalize input data
-                tf.keras.layers.Rescaling(1./255),
+        model = tf.keras.models.Sequential()
 
-                # Perform convolution and pooling five times
-                tf.keras.layers.Conv2D(16, (3, 3), activation="relu",
-                                       input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)),
-                tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-                tf.keras.layers.Conv2D(32, (3, 3), activation="relu"),
-                tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-                tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
-                tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
+        if pretrained_model is not None:
+            model.add(pretrained_model)
 
-                tf.keras.layers.Dropout(self.train_params.dropout),
+        # Normalize input data
+        model.add(tf.keras.layers.Rescaling(1./255))
 
-                # Flatten units
-                tf.keras.layers.Flatten(),
+        # Data augmentation
+        model.add(data_augmentation)
 
-                # Add hidden layers with dropout
-                tf.keras.layers.Dense(512, activation="relu"),
+        # Perform convolution and pooling five times
+        model.add(tf.keras.layers.Conv2D(16, (3, 3), activation="relu",
+                  input_shape=(IMG_HEIGHT, IMG_WIDTH, 3)))
+        model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+        model.add(tf.keras.layers.Conv2D(32, (3, 3), activation="relu"))
+        model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+        model.add(tf.keras.layers.Conv2D(64, (3, 3), activation="relu"))
+        model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
 
-                # Add an output layer with output units for all 2 categories
-                tf.keras.layers.Dense(1, activation="sigmoid")
-            ]
-        )
+        model.add(tf.keras.layers.Dropout(self.train_params.dropout))
+
+        # Flatten units
+        model.add(tf.keras.layers.Flatten())
+
+        # Add hidden layers with dropout
+        model.add(tf.keras.layers.Dense(512, activation="relu"))
+
+        # Add an output layer with output units for all 2 categories
+        model.add(tf.keras.layers.Dense(1, activation="sigmoid"))
 
         # Train neural net
         model.compile(
@@ -170,7 +173,17 @@ class Train:
             np.array(images), np.array(labels), test_size=self.train_params.validation_split
         )
 
-        model = self.get_model()
+        model = None
+
+        if self.train_params.train_mode == "transfer":
+            model = tf.keras.models.load_model(
+                self.train_params.model_save_file
+            )
+
+            for layer in model.layers:
+                layer.trainable = False
+
+        model = self.get_model(pretrained_model=model)
 
         # print summary of the model
         model.build((None, IMG_HEIGHT, IMG_WIDTH, 3))

@@ -488,11 +488,13 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         if self.trainParams.train_data_file is not None and self.trainParams.model_save_file is not None:
             # check if file exists
             if os.path.isfile(self.trainParams.model_save_file):
-                ans = self.askMessageBox(
-                    "Warning", "Model file already exists. Overwrite?"
+                improve = self.askImproveMessageBox(
+                    "Warning", "Model file already exists. Do you want to improve upon the existing model?"
                 )
-                if not ans:
+                if improve is None:
                     return
+
+            self.trainParams.train_mode = "transfer" if improve else "replace"
 
             # train model in seperate thread
             self.train_thread = TrainThread(self.trainParams)
