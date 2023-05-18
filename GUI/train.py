@@ -2,7 +2,11 @@ import os
 import sys
 
 import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
 import argparse
+
+from filehandling import load_data_from_df
 
 # Import tensorflow libraries
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # noqa
@@ -29,7 +33,8 @@ def main():
     parser.add_argument('--learning-rate', type=float, default=0.001,
                         help='learning rate')
     parser.add_argument('--batch-size', type=int, default=32,
-                        help='batch size')
+                        help='batch size'),
+    parser.add_argument('--dropout', type=float, default=0.2),
     parser.add_argument('--rotation', type=float, default=0.785,
                         help='rotation angle')
     parser.add_argument('--optimizer', type=str, default='Adam',
@@ -47,6 +52,7 @@ def main():
                          validation_split=args.validation_split,
                          learning_rate=args.learning_rate,
                          batch_size=args.batch_size,
+                         dropout=args.dropout,
                          rotation=args.rotation,
                          optimizer=args.optimizer,
                          metrics=args.metrics,
@@ -64,9 +70,10 @@ class Train:
 
     def get_class_dataframe(self):
         df = pd.read_csv(self.train_params.train_data_file, sep=";",
-                         header=0, names=["file", "label"])
-        df["label"] = df["label"].astype(str)
-        return df
+                         header=0, names=["images", "labels"])
+        df["labels"] = df["labels"].astype(str)
+
+        return df.to_numpy()
 
     def get_optimizer(self):
         if self.train_params.optimizer == "RMSprop":
@@ -97,7 +104,7 @@ class Train:
                 tf.keras.layers.Conv2D(64, (3, 3), activation="relu"),
                 tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
 
-                tf.keras.layers.Dropout(0.2),
+                tf.keras.layers.Dropout(self.train_params.dropout),
 
                 # Flatten units
                 tf.keras.layers.Flatten(),
@@ -145,36 +152,12 @@ class Train:
         """
         train the model
         """
+        images, labels = load_data_from_df(self.get_class_dataframe(),
+                                           img_size=IMG_HEIGHT)
 
-        # Define the ImageDataGenerator
-        datagen = ImageDataGenerator(rescale=1./255,
-                                     rotation_range=self.train_params.rotation,
-                                     horizontal_flip=self.train_params.horiz_flip,
-                                     vertical_flip=self.train_params.vert_flip,
-                                     validation_split=self.train_params.validation_split)
-
-        df = self.get_class_dataframe()
-
-        # Create the ImageDataGenerator from the DataFrame
-        train_generator = datagen.flow_from_dataframe(
-            dataframe=df,
-            x_col='file',
-            y_col='label',
-            target_size=(IMG_HEIGHT, IMG_HEIGHT),  # Set the target image size
-            batch_size=self.train_params.batch_size,
-            class_mode='binary',
-            subset='training'
-        )
-
-        # Create a separate ImageDataGenerator for the validation set
-        validation_generator = datagen.flow_from_dataframe(
-            dataframe=df,
-            x_col='file',
-            y_col='label',
-            target_size=(IMG_HEIGHT, IMG_HEIGHT),
-            batch_size=self.train_params.batch_size,
-            class_mode='binary',
-            subset='validation'
+        # split data into training and validation sets
+        train_images, test_images, train_labels, test_labels = train_test_split(
+            np.array(images), np.array(labels), test_size=self.train_params.validation_split
         )
 
         model = self.get_model()
@@ -184,14 +167,14 @@ class Train:
         print(model.summary(), f"\n")
 
         # Fit and evaluate model on training data
-        earlystopper = tf.keras.callbacks.EarlyStopping(patience=3, verbose=1)
+        earlystopper = tf.keras.callbacks.EarlyStopping(patience=5, verbose=1)
         checkpointer = tf.keras.callbacks.ModelCheckpoint(self.train_params.model_save_file,
                                                           verbose=1,
                                                           save_best_only=True)
         cb = [earlystopper, checkpointer]
 
-        history = model.fit(train_generator,
-                            validation_data=validation_generator,
+        history = model.fit(train_images, train_labels,
+                            validation_data=(test_images, test_labels),
                             epochs=self.train_params.epochs,
                             callbacks=cb,
                             verbose=1)

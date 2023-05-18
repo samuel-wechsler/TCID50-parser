@@ -3,8 +3,47 @@ import sys
 import subprocess
 from datetime import datetime
 
+import cv2
+import csv
+from tqdm import tqdm
+
+
+def load_data_from_df(dataframe, img_size=256):
+    """
+    load data from a class file; returns a tuple of (images, labels)
+    """
+    print("loading images and labels...")
+
+    images = []
+    labels = []
+
+    seen = set()
+
+    for path, label in tqdm(dataframe, total=len(dataframe)):
+        label = int(label.strip())
+
+        # ignore files that don't exist, are in the skip list, who's directory is in the skip list
+        # or have ._ in their name
+        if os.path.isfile(path) and path not in seen and '._' not in path:
+            # parse label
+            labels.append(label)
+
+            # parse image as ndarray
+            im = cv2.imread(path)
+
+            if im is not None:
+                # resize image
+                resizeIM = cv2.resize(im, (img_size, img_size))
+                images.append(resizeIM)
+
+            seen.add(path)
+
+    return (images, labels)
+
 
 class FileHandling:
+    """ File handling class for the GUI"""
+
     def __init__(self):
         self.dir = None
         self.saveFile = None
