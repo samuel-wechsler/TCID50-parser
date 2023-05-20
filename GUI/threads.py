@@ -126,7 +126,6 @@ class ClassifyThread(QThread):
         self.params = params
 
     def run(self):
-        print("running classify thread")
         from classify import ClassifyPlates
 
         self.classify = ClassifyPlates(self.params)

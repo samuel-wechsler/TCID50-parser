@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>TCID50 Parser</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget">
@@ -668,8 +668,15 @@
      <addaction name="actionUploadModel"/>
      <addaction name="actionUploadClasses"/>
     </widget>
+    <widget class="QMenu" name="menuSave">
+     <property name="title">
+      <string>Save</string>
+     </property>
+     <addaction name="actionTiters"/>
+     <addaction name="actionClassifications"/>
+    </widget>
     <addaction name="actionOpen_Folder"/>
-    <addaction name="actionSave"/>
+    <addaction name="menuSave"/>
     <addaction name="menuUpload"/>
     <addaction name="separator"/>
     <addaction name="actionAdd_Filter"/>
@@ -713,14 +720,6 @@
   <action name="actionRedo">
    <property name="text">
     <string>Redo</string>
-   </property>
-  </action>
-  <action name="actionSave">
-   <property name="text">
-    <string>Save</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionAdd">
@@ -789,6 +788,22 @@
   <action name="actionUploadClasses">
    <property name="text">
     <string>Upload Classifications</string>
+   </property>
+  </action>
+  <action name="actionTiters">
+   <property name="text">
+    <string>Titers</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionClassifications">
+   <property name="text">
+    <string>Classifications</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S, Ctrl+C</string>
    </property>
   </action>
  </widget>

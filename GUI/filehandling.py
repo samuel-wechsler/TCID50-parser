@@ -67,9 +67,16 @@ class FileHandling:
 
         return img_paths
 
-    def saveResults(self, results):
+    def saveClassifications(self, results):
         logfile = open(self.saveFile, "w")
         logfile.write(f"images;labels\n")
+        for key in results.keys():
+            logfile.write(f"{key};{results[key]}\n")
+        logfile.close()
+
+    def saveTiters(self, results):
+        logfile = open(self.saveFile, "w")
+        logfile.write(f"plates;titers\n")
         for key in results.keys():
             logfile.write(f"{key};{results[key]}\n")
         logfile.close()

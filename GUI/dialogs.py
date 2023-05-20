@@ -164,6 +164,7 @@ class ClassUploadDlg(QDialog):
 
 class AutomateDlg(QDialog):
     """ Dialog to configure automated classification. """
+    # TODO: check that required fields are filled in
 
     def __init__(self):
         super(AutomateDlg, self).__init__()
@@ -231,13 +232,13 @@ class AutomateDlg(QDialog):
                 self.col_range.append(int(c))
 
     def setSerialDilution(self):
-        self.serial_dilution = np.log(int(self.ui.serial_dilution.text()))
+        self.serial_dilution = int(self.ui.serial_dilution.text())
 
     def setInitialDilution(self):
-        self.initial_dilution = -np.log(int(self.ui.initial_dilution.text()))
+        self.initial_dilution = int(self.ui.initial_dilution.text())
 
     def setParticlesToPfu(self):
-        self.part_pfu = self.ui.part_pfu.text()
+        self.part_pfu = int(self.ui.part_pfu.text())
 
     def getParams(self):
         return (self.model_path,

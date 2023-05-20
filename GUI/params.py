@@ -10,6 +10,8 @@ class AutomateConfig:
         model_path: path to model file
         imgs: list of image files (to be classified, some images in dir may have been filtered out)
         classified: dict of classified images with bool values
+        serial_dilution: serial dilution factor
+        initial_dilution: initial dilution factor
         """
         self.plates_dir = plates_dir
         self.model_path = model_path

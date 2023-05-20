@@ -29,9 +29,7 @@ class ClassifyUtils:
             return classnames[int(tf.round(prediction)[0][0])], max(prediction[0])
 
         else:
-            ### PROBABILY STILL BUGGY ###
-            print(prediction[0][0])
-            return classnames[int(prediction[0][0] >= 0.5)], 2*(max(prediction[0][0], 1 - prediction[0][0]) - 0.5)
+            return classnames[int(prediction[0][0] >= 0.5)], 1 - abs(prediction[0][0] - 0.5) * 2
 
     def load_and_prep_image(self, image_path):
         """
@@ -77,25 +75,32 @@ class ClassifyPlates:
             plate_dir = os.path.join(self.params.plates_dir, plate_dir)
 
             # ignore files in directory (plates must be subdirs of dir)
-            if os.path.isdir(plate_dir):
+            # also ingore plate dirs that were filtered out
+            if os.path.isdir(plate_dir) and any(plate_dir in path for path in self.params.img_paths):
                 plate = Plate(params=self.params, dir=plate_dir)
                 plates.append(plate)
 
         return plates
 
     def classify_plates(self, thread):
-        c = 1
-        for plate in self.plates:
-            plate.classify()
-            plate.display()
-            # TODO: refine progress updates, currently only updates after plate is classified
-            # emit progress as percentage
-            thread.classify_complete.emit(round(c / len(self.plates) * 100))
-            c += 1
+        """ calls classify method of each plate """
+        # calculate total number of images to classify
+        length1 = ord(self.params.row_range[1]) - \
+            ord(self.params.row_range[0]) + 1
+        length2 = self.params.col_range[1] - self.params.col_range[0] + 1
+        total = len(self.plates) * length1 * length2
 
-    def get_classifications(self):
+        counter = 1
+
+        for plate in self.plates:
+            plate.classify(
+                update_progress=thread.classify_complete, counter=counter, total=total)
+
+            counter += length1 * length2
+
+    def get_unclassified_images(self):
         """
-        returns a dictionary with key of each file_path and value of labels
+        returns a dictionary of all images, sorted by classification (first all unclassified images, then all classified images)
         """
         classifications = dict()
 
@@ -105,18 +110,51 @@ class ClassifyPlates:
                     classifications[plate.image_paths[row][col]
                                     ] = plate.classified_plate[row][col]
 
-        # sort dictionary by value (true or false)
+        # sort dictionary by None values
         classifications = dict(
-            sorted(classifications.items(), key=lambda item: not item[1])
+            sorted(classifications.items(),
+                   key=lambda item: (item[1] is not None, item[1]))
         )
 
         return classifications
 
-    def add_manual_checks(self, manual_checks):
-        for plate_dir in manual_checks.keys():
+    def get_manual_checks(self):
+        """
+        returns a dictionary of all images that need to be rechecked manually
+        """
+        manual_checks = dict()
+
+        for plate in self.plates:
+            for image, (row, col) in plate.manual_recheck_list:
+                manual_checks[image] = (row, col)
+
+        return manual_checks
+
+    def set_manual_checks(self, manual_checks):
+        """ This method adds images were rechecked manually to the classified dictionary """
+        for image in manual_checks.keys():
+            plate_dir = os.path.dirname(image)
+
             plate = [plate for plate in self.plates if plate.dir == plate_dir][0]
-            row, col, label = manual_checks[plate_dir]
+
+            row, col, label = manual_checks[image]
             plate.classified_plate[row][col] = label
+
+            print(row, col, plate.dir)
+
+    def get_titers(self):
+        """ calculates the titer of each plate """
+        titers = dict()
+
+        for plate in self.plates:
+            titers[plate.get_name()] = plate.get_titer()
+
+        return titers
+
+    def save_plates(self, save_dir):
+        """ saves all plates in a specified directory """
+        for plate in self.plates:
+            plate.save(os.path.join(save_dir, plate.get_name() + ".png"))
 
 
 class Plate(ClassifyUtils):
@@ -141,8 +179,13 @@ class Plate(ClassifyUtils):
 
         # evaluated parameters
         self.classified_plate = None
-        self.low_confidence = None
-        self.outliers = None
+        self.low_confidence = []
+        self.outliers = []
+        self.manual_recheck_list = []
+
+    def get_name(self):
+        """ returns the name of the plate: dir_name_row_range_col_range """
+        return f"{os.path.basename(self.dir)}_{self.rows[0]}{self.rows[-1]}{self.cols[0]}{self.cols[-1]}"
 
     def get_image_paths(self):
         """
@@ -162,6 +205,8 @@ class Plate(ClassifyUtils):
 
                 # find image with specified coordinates
                 matches = [image for image in images if coord in image]
+                if len(matches) == 0:
+                    print(f"missing image: {plate.dir} {coord}")
                 file_path = os.path.join(self.dir, matches[0])
                 row.append(file_path)
 
@@ -169,7 +214,7 @@ class Plate(ClassifyUtils):
 
         return plate
 
-    def classify(self):
+    def classify(self, update_progress, counter, total):
         """
         This method takes a matrix of paths to images as an argument, classifys each image with a specified model
         and returns the predictions.
@@ -177,13 +222,16 @@ class Plate(ClassifyUtils):
         classified = self.params.classified
 
         self.classified_plate = []
-        self.low_confidence = []
 
         for row_idx in range(len(self.image_paths)):
             classified_row = []
             for col_idx in range(len(self.image_paths[row_idx])):
+                # update progress
+                update_progress.emit(counter / total * 100)
+                counter += 1
+
+                # if image has been manually classified, add manual classification to row
                 if self.image_paths[row_idx][col_idx] in classified.keys():
-                    # if image has been manually classified, append to row
                     classified_row.append(
                         classified[self.image_paths[row_idx][col_idx]]
                     )
@@ -191,30 +239,35 @@ class Plate(ClassifyUtils):
                     continue
 
                 # classify image with model
-                prediction = self.classify_image(
+                result, confidence = self.classify_image(
                     self.image_paths[row_idx][col_idx]
                 )
-
-                result, confidence = prediction
-
-                # print(os.path.basename(
-                #     self.image_paths[row_idx][col_idx]), result, confidence)
 
                 # append result to row
                 classified_row.append(result)
 
-                # if low confidence, append to low_confidence list
-                if confidence < 0.55:
-                    self.low_confidence.append((row_idx, col_idx))
-
+                # if low confidence, set classification to None*
+                if confidence > 0.8:
+                    self.low_confidence.append(
+                        (self.image_paths[row_idx]
+                         [col_idx], (row_idx, col_idx))
+                    )
             self.classified_plate.append(classified_row)
+
+        # TODO: code smell - refactor
+        self.get_manual_recheck_list()
 
     def get_titer(self):
         """
         Calculates TCID50 according to spearman and karber formula
+
+        Note: weird variable names
+        d_0: negative log10 of initial dilution
+        d: log10 of serial dilution
+        x_0: log10 concentration of first fully infected row
         """
-        d_0 = self.initial_dilution
-        d = self.serial_dilution
+        d_0 = -np.log10(self.params.initial_dilution)
+        d = np.log10(self.params.serial_dilution)
 
         # special case: no fully infected rows
         if not any([sum(row) == len(row) for row in self.classified_plate]):
@@ -230,17 +283,18 @@ class Plate(ClassifyUtils):
         s = 0
 
         # smooth out data
-        plate = sorted(plate, key=lambda row: (
+        self.classified_plate = sorted(self.classified_plate, key=lambda row: (
             sum(row) / len(row)), reverse=True)
 
         # remove duplicates
         p = []
-        [p.append(row) for row in plate if row not in p]
+        [p.append(row) for row in self.classified_plate if row not in p]
 
         for row in p:
             s += (sum(row) / len(row))
 
         self.titer = 10 ** -((x_0 + d/2 - d * s) + d_0)
+        return self.titer
 
     def most_diluted(self):
         """ helper of get_titer """
@@ -250,15 +304,14 @@ class Plate(ClassifyUtils):
                 row0 = row
         return row0
 
-    def get_outliers(self):
+    def get_outlier_rows(self):
         """
         returns all rows that are considered to be outliers (i.e., p<0.05).
         """
-        self.outlier_rows = []
+        outlier_rows = []
         d = 1
 
-        # Overestimate virus count
-        virus_count = 1.5 * self.get_titer()
+        virus_count = self.get_titer()
 
         for row in self.classified_plate:
             # get probability of CPE
@@ -269,24 +322,36 @@ class Plate(ClassifyUtils):
 
             # if outlier, append row index
             if r < 0.05:
-                self.outlier_rows.append(d-1)
+                outlier_rows.append(d-1)
             d += 1
+
+        return outlier_rows
 
     def prob_cpe(self, titer, dilution):
         """
         calculates the probablity of CPE occuring given specified parameters
         """
-        return 1 - np.exp(-titer / (self.particels_to_pfu * np.power(self.serial_dilution, dilution)))
+        return 1 - np.exp(-titer / (self.params.particle_to_pfu * np.power(self.params.serial_dilution, dilution)))
 
-    def manual_corrections(self):
+    def get_manual_recheck_list(self):
         """
-        returns plate directory, row and column of all wells that need to be rechecked manually
+        returns plate directory, row and column of all wells that need to be rechecked manually;
+        i.e., all wells that were classified with low confidence and all wells that are considered to be outliers
         """
-        manual_corrections = self.low_confidence.copy()
-        manual_corrections.extend(
-            (self.dir, (outlier, i)) for outlier in self.outliers for i in range(len(self.cols))
+        # get outliers
+        outliers = self.get_outlier_rows()
+
+        # get manual corrections
+        self.manual_recheck_list = self.low_confidence.copy()
+        self.manual_recheck_list.extend(
+            (self.image_paths[outlier][i], (outlier, i)) for outlier in outliers for i in range(len(self.cols))
         )
-        return manual_corrections
+
+        # set outlier / low confidence wells to None
+        for (_, (row, col)) in self.manual_recheck_list:
+            self.classified_plate[row][col] = None
+
+        return self.manual_recheck_list
 
     def save(self, save_path):
         """

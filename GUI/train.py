@@ -1,10 +1,12 @@
 import os
 import sys
 
+import argparse
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-import argparse
+from sklearn.utils import class_weight
 
 from filehandling import load_data_from_df
 
@@ -74,6 +76,18 @@ class Train:
         df["labels"] = df["labels"].astype(str)
 
         return df.to_numpy()
+
+    def compute_class_weights(self, labels):
+        """
+        Compute class weights based on the distribution of classes in the labels.
+        """
+        class_weights = class_weight.compute_class_weight(
+            class_weight='balanced', classes=np.unique(labels), y=labels)
+
+        class_weights = {i: weight for i, weight in zip(
+            np.unique(labels), class_weights)}
+
+        return class_weights
 
     def get_optimizer(self):
         if self.train_params.optimizer == "RMSprop":
@@ -196,11 +210,18 @@ class Train:
                                                           save_best_only=True)
         cb = [earlystopper, checkpointer]
 
+        print(
+            f"training model... with class weights {self.compute_class_weights(labels)}\n")
+
         history = model.fit(train_images, train_labels,
                             validation_data=(test_images, test_labels),
                             epochs=self.train_params.epochs,
                             callbacks=cb,
-                            verbose=1)
+                            verbose=1,
+                            class_weight=self.compute_class_weights(
+                                train_labels
+                            )
+                            )
 
         # save model architecture as json file
         self.save_model_json(model)
