@@ -246,7 +246,7 @@ class AutomateDlg(QDialog):
 
         if os.path.dirname(self.model_path) == "trained_models":
             self.model_path = os.path.join(
-                os.path.dirname(os.getcwd()),
+                os.getcwd(),
                 "trained_models",
                 os.path.basename(self.model_path)
             )

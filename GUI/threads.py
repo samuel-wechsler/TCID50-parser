@@ -78,7 +78,7 @@ class TrainThread(threading.Thread):
         self._stop_event = threading.Event()
 
     def start_train_in_terminal(self):
-        cwd = os.getcwd()
+        cwd = os.path.dirname(os.path.realpath(__file__))
         program = 'train.py'
         train_args = [
             '--train-data-file', self.trainParams.train_data_file,

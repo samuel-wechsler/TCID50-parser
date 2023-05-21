@@ -533,13 +533,22 @@ class App(QMainWindow, FileHandling, ErrorHandling):
             return
 
         if self.trainParams.train_data_file is not None and self.trainParams.model_save_file is not None:
+            improve = False
+
             # check if file exists
             if os.path.isfile(self.trainParams.model_save_file):
                 improve = self.askImproveMessageBox(
-                    "Warning", "Model file already exists. Do you want to improve upon the existing model?"
+                    "Warning", "Model file already exists. Do you want to improve upon the existing model and thereby overwrite it?"
                 )
                 if improve is None:
                     return
+
+                if not improve:
+                    ans = self.askMessageBox(
+                        "Warning", "Do you want to replcae the existing model?"
+                    )
+                    if not ans:
+                        return
 
             self.trainParams.train_mode = "transfer" if improve else "replace"
 
@@ -627,7 +636,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
                 return
 
             dirname = os.path.join(
-                os.path.dirname(os.getcwd()),
+                os.getcwd(),
                 os.path.dirname(filepath) or "trained_models"
             )
             filename = os.path.basename(
