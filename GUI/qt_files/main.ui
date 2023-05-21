@@ -678,24 +678,24 @@
     <addaction name="actionOpen_Folder"/>
     <addaction name="menuSave"/>
     <addaction name="menuUpload"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Filter"/>
-    <addaction name="actionReset_Filter"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuTrain">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Train</string>
+     <string>Edit</string>
     </property>
-    <addaction name="actionTraining_params"/>
-    <addaction name="actionChoose_model"/>
+    <addaction name="actionNext_Image"/>
+    <addaction name="actionPrevious_Image"/>
+    <addaction name="separator"/>
+    <addaction name="actionAddFilter"/>
+    <addaction name="actionResetFilters"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuTrain"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -804,6 +804,26 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S, Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionNext_Image">
+   <property name="text">
+    <string>next Image</string>
+   </property>
+  </action>
+  <action name="actionPrevious_Image">
+   <property name="text">
+    <string>previous Image</string>
+   </property>
+  </action>
+  <action name="actionAddFilter">
+   <property name="text">
+    <string>Add Filter</string>
+   </property>
+  </action>
+  <action name="actionResetFilters">
+   <property name="text">
+    <string>Reset Filters</string>
    </property>
   </action>
  </widget>

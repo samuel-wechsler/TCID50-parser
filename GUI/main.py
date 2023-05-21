@@ -62,8 +62,11 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.ui.actionOpen_Folder.triggered.connect(self.chooseImgDirDlg)
         self.ui.actionClassifications.triggered.connect(self.saveClassDlg)
         self.ui.actionTiters.triggered.connect(self.saveTiterDlg)
-        self.ui.actionAdd_Filter.triggered.connect(self.addFilter)
-        self.ui.actionReset_Filter.triggered.connect(self.resetFilters)
+        self.ui.actionAddFilter.triggered.connect(self.addFilter)
+        self.ui.actionResetFilters.triggered.connect(self.resetFilters)
+        self.ui.actionNext_Image.triggered.connect(lambda: self.nextImage(1))
+        self.ui.actionPrevious_Image.triggered.connect(
+            lambda: self.nextImage(-1))
         self.ui.actionUploadImages.triggered.connect(self.uploadImages)
         self.ui.actionUploadModel.triggered.connect(self.uploadModel)
         self.ui.actionUploadClasses.triggered.connect(self.uploadClasses)
@@ -124,6 +127,10 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.ui.pushBredo.setShortcut("ctrl+z")
         self.ui.pushBnotinf.setShortcut(Qt.Key_Left)
         self.ui.pushBinf.setShortcut(Qt.Key_Right)
+
+        # set shortcuts for switching images
+        self.ui.actionNext_Image.setShortcut(Qt.Key_Down)
+        self.ui.actionPrevious_Image.setShortcut(Qt.Key_Up)
 
     def setButtonState(self, enabled):
         """
@@ -424,6 +431,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
     def scrollToCurrent(self):
         item = self.ui.tableWidget.item(self.imgIndex, 0)
         self.ui.tableWidget.scrollToItem(item, QAbstractItemView.PositionAtTop)
+        self.ui.tableWidget.setCurrentItem(item)
 
     def goToListImage(self, rowItem):
         self.imgIndex = rowItem.row() - 1
