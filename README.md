@@ -8,7 +8,10 @@ This program was developed to improve the workflow for titration readout of endp
 * Development of custom convolutional neural networks for automated classification of cell culture images, perhaps using transfer learning
 
 ## See it in action
-
+Here's a visual illustration of what the program's output.
+<p align="center">
+  <img width="700" src="https://github.com/samuel-wechsler/TCID50-parser/assets/98318988/71f8ed4f-91f9-4fcc-bf0c-c10efbc9ec9e">
+</p>
 
 ## Getting started
 To install this programm, you will need to have Python 3.8 or higher installed. Download the programm using git:
