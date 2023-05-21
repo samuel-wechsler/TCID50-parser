@@ -3,11 +3,18 @@ import threading
 import subprocess
 import platform
 import os
+from datetime import datetime
 
 from datetime import datetime
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
+
+print("loading tensorflow...")  # noqa
+start = datetime.now()  # noqa
+from classify import ClassifyPlates
+end = datetime.now()  # noqa
+print("tensorflow loaded in {} seconds".format(end - start))  # noqa
 from upload import Uploader
 from filehandling import FileHandling
 
@@ -126,8 +133,6 @@ class ClassifyThread(QThread):
         self.params = params
 
     def run(self):
-        from classify import ClassifyPlates
-
         self.classify = ClassifyPlates(self.params)
 
         self.classify.classify_plates(thread=self)

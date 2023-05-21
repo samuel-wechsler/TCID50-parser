@@ -153,6 +153,13 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         if self.saveFile is not None:
             self.saveClassifications(self.classifications)
 
+    def savePlatesDlg(self):
+        """ file dialog to choose directory to save plate images """
+        path = str(QFileDialog.getExistingDirectory(self,
+                                                    "Select image directory."))
+
+        self.classif
+
     def saveTiterDlg(self):
         """
         file dialog to choose file to save titers
@@ -689,19 +696,28 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
     def get_titers(self):
         """"""
-        manual_checks = self.classifyThread.classify.get_manual_checks()
+        if hasattr(self, "classifyThread"):
+            manual_checks = self.classifyThread.classify.get_manual_checks()
+            manually_checked = dict()
 
-        manually_checked = dict()
+            # add manual checks to classifications
+            for image in manual_checks.keys():
+                row, col = manual_checks[image]
+                label = self.classifications[image]
 
-        # add manual checks to classifications
-        for image in manual_checks.keys():
-            row, col = manual_checks[image]
-            label = self.classifications[image]
+                manually_checked[image] = (row, col, label)
 
-            manually_checked[image] = (row, col, label)
+            self.classifyThread.classify.set_manual_checks(manually_checked)
+            self.titers = self.classifyThread.classify.get_titers()
 
-        self.classifyThread.classify.set_manual_checks(manually_checked)
-        self.titers = self.classifyThread.classify.get_titers()
+        else:
+            self.showErrorMessageBox(
+                "Error",
+                "Missing input",
+                "Please classify images before saving titers."
+            )
+
+            return
 
         return self.titers
 
