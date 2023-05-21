@@ -9,8 +9,13 @@ This program was developed to improve the workflow for titration readout of endp
 
 ## See it in action
 Here's a visual illustration of what the program's output.
-<p align="center">
-  <img width="700" src="https://github.com/samuel-wechsler/TCID50-parser/assets/98318988/71f8ed4f-91f9-4fcc-bf0c-c10efbc9ec9e">
+<p align="left">
+  <img src="https://github.com/samuel-wechsler/TCID50-parser/assets/98318988/a9986014-edd8-4bb3-96d5-24951948801a" width="500"/>
+</p>
+
+
+<p align="left">
+  <img width="500" src="https://github.com/samuel-wechsler/TCID50-parser/assets/98318988/71f8ed4f-91f9-4fcc-bf0c-c10efbc9ec9e">
 </p>
 
 ## Getting started
