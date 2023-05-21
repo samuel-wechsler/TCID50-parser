@@ -10,11 +10,19 @@ from update import *
 from upload import Uploader
 from threads import *
 
-FilterUi, QtBaseclass = uic.loadUiType("qt_files/filterdialog.ui")
-UploadUi, QtBaseclass = uic.loadUiType("qt_files/uploaddlg.ui")
-AutomateUi, QtBaseclass = uic.loadUiType("qt_files/automatedlg.ui")
-TrainParamsUi, QtBaseclass = uic.loadUiType("qt_files/trainingparamsdlg.ui")
-UpdateUi, QtBaseclass = uic.loadUiType("qt_files/updatedlg.ui")
+# load ui files
+cd = os.path.dirname(os.path.realpath(__file__))
+
+FilterUi, QtBaseclass = uic.loadUiType(
+    os.path.join(cd, "qt_files/filterdialog.ui"))
+UploadUi, QtBaseclass = uic.loadUiType(
+    os.path.join(cd, "qt_files/uploaddlg.ui"))
+AutomateUi, QtBaseclass = uic.loadUiType(
+    os.path.join(cd, "qt_files/automatedlg.ui"))
+TrainParamsUi, QtBaseclass = uic.loadUiType(
+    os.path.join(cd, "qt_files/trainingparamsdlg.ui"))
+UpdateUi, QtBaseclass = uic.loadUiType(
+    os.path.join(cd, "qt_files/updatedlg.ui"))
 
 
 class UpdateDlg(QDialog):

@@ -3,3 +3,5 @@ datasets
 .DS_Store
 .gitignore
 .gitattributes
+credentials/
+credentials/*

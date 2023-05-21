@@ -15,12 +15,17 @@ from PyQt5.QtCore import *
 
 import qdarktheme
 
+# extend sys.path to include python files from this dir
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))  # noqa)
+
 from filehandling import FileHandling
 from errorhandling import ErrorHandling
 from params import *
 from dialogs import *
 
-MainUI, QtBaseclass = uic.loadUiType("qt_files/main.ui")
+# load ui files
+cd = os.path.dirname(os.path.realpath(__file__))
+MainUI, QtBaseclass = uic.loadUiType(os.path.join(cd, "qt_files/main.ui"))
 
 
 class App(QMainWindow, FileHandling, ErrorHandling):

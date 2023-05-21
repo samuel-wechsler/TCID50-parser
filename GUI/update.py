@@ -1,3 +1,4 @@
+import os
 import subprocess
 import requests
 import configparser
@@ -5,8 +6,11 @@ import configparser
 
 def get_current_version():
     """ Returns the current version of the application. """
+    config_path = os.path.join(os.path.dirname(
+        os.path.realpath(__file__)), 'config.ini')
+
     config = configparser.ConfigParser()
-    config.read('config.ini')
+    config.read(config_path)
     current_version = config.get('Application', 'Version')
     return current_version
 
