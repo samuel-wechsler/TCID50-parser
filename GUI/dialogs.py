@@ -6,6 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
+from update import *
 from upload import Uploader
 from threads import *
 
@@ -13,6 +14,36 @@ FilterUi, QtBaseclass = uic.loadUiType("qt_files/filterdialog.ui")
 UploadUi, QtBaseclass = uic.loadUiType("qt_files/uploaddlg.ui")
 AutomateUi, QtBaseclass = uic.loadUiType("qt_files/automatedlg.ui")
 TrainParamsUi, QtBaseclass = uic.loadUiType("qt_files/trainingparamsdlg.ui")
+UpdateUi, QtBaseclass = uic.loadUiType("qt_files/updatedlg.ui")
+
+
+class UpdateDlg(QDialog):
+    def __init__(self):
+        super(UpdateDlg, self).__init__()
+
+        if not check_for_updates():
+            pass
+
+        self.ui = UpdateUi()
+        self.ui.setupUi(self)
+
+        self._connectWidgets()
+        self.response = self.ui.comboBox.currentText()
+
+    def _connectWidgets(self):
+        self.ui.pushButton.clicked.connect(self.updateApplication)
+        self.ui.comboBox.currentIndexChanged.connect(self.setResponse)
+
+    def setResponse(self):
+        self.response = self.ui.comboBox.currentText()
+
+    def updateApplication(self):
+        update = "Yes please" == self.response
+
+        if update:
+            update_application()
+
+        self.close()
 
 
 class MyDialog(QDialog):

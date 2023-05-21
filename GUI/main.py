@@ -55,6 +55,8 @@ class App(QMainWindow, FileHandling, ErrorHandling):
 
         self.trainParams = TrainParams(None, None)
 
+        self.checkForUpdates()
+
     def _connectMenubar(self):
         # Connect File actions
         self.ui.actionOpen_Folder.triggered.connect(self.chooseImgDirDlg)
@@ -142,6 +144,14 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         enable or disable redo button
         """
         self.ui.pushBredo.setEnabled(enabled)
+
+    def checkForUpdates(self):
+        """
+        Check for updates to the application.
+        """
+        if check_for_updates():
+            self.updateDlg = UpdateDlg()
+            self.updateDlg.exec()
 
     def saveClassDlg(self):
         """
