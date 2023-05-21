@@ -8,9 +8,15 @@ This program was developed to improve the workflow for titration readout of endp
 * Development of custom convolutional neural networks for automated classification of cell culture images, perhaps using transfer learning
 
 ## See it in action
+Here's the basics of how to use the program.
+
+<p align="left">
+  <img src="https://github.com/samuel-wechsler/TCID50-parser/assets/98318988/985b8c4f-b264-4a3a-bea1-694a6860796c)" width="500"/>
+</p>
+
 Here's a visual illustration of what the program's output.
-<p align="center">
-  <img width="700" src="https://github.com/samuel-wechsler/TCID50-parser/assets/98318988/71f8ed4f-91f9-4fcc-bf0c-c10efbc9ec9e">
+<p align="left">
+  <img width="500" src="https://github.com/samuel-wechsler/TCID50-parser/assets/98318988/71f8ed4f-91f9-4fcc-bf0c-c10efbc9ec9e">
 </p>
 
 ## Getting started
