@@ -83,10 +83,12 @@ class TrainThread(threading.Thread):
         train_args = [
             '--train-data-file', self.trainParams.train_data_file,
             '--model-save-file', self.trainParams.model_save_file,
+            '--train-mode', self.trainParams.train_mode,
             '--epochs', str(self.trainParams.epochs),
             '--validation-split', str(self.trainParams.validation_split),
             '--learning-rate', str(self.trainParams.learning_rate),
             '--batch-size', str(self.trainParams.batch_size),
+            '--dropout', str(self.trainParams.dropout),
             '--rotation', str(self.trainParams.rotation),
             '--optimizer', self.trainParams.optimizer,
             '--horiz-flip', str(self.trainParams.horiz_flip),
@@ -124,7 +126,6 @@ class ClassifyThread(QThread):
         self.params = params
 
     def run(self):
-        print("running classify thread")
         from classify import ClassifyPlates
 
         self.classify = ClassifyPlates(self.params)

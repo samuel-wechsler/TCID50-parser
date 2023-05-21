@@ -58,7 +58,8 @@ class App(QMainWindow, FileHandling, ErrorHandling):
     def _connectMenubar(self):
         # Connect File actions
         self.ui.actionOpen_Folder.triggered.connect(self.chooseImgDirDlg)
-        self.ui.actionSave.triggered.connect(self.chooseResultsFilerDlg)
+        self.ui.actionClassifications.triggered.connect(self.saveClassDlg)
+        self.ui.actionTiters.triggered.connect(self.saveTiterDlg)
         self.ui.actionAdd_Filter.triggered.connect(self.addFilter)
         self.ui.actionReset_Filter.triggered.connect(self.resetFilters)
         self.ui.actionUploadImages.triggered.connect(self.uploadImages)
@@ -82,7 +83,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         # Connect not infected
         self.ui.pushBnotinf.clicked.connect(lambda: self.classified(False))
         # Connect classify
-        self.ui.pushBclassify.clicked.connect(self.automate)
+        self.ui.pushBclassify.clicked.connect(self.classify)
 
         # Connect push button from second tab
         self.ui.start_train.clicked.connect(self.startTrainModel)
@@ -142,15 +143,34 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         """
         self.ui.pushBredo.setEnabled(enabled)
 
-    def chooseResultsFilerDlg(self):
+    def saveClassDlg(self):
         """
-        method to start file dialog for selection of images that are to be classified
+        file dialog to choose file to save classifications
         """
-        saveDlg = QFileDialog.getSaveFileName(self, "Select file to save results.",
+        saveDlg = QFileDialog.getSaveFileName(self, "Select file to save classifications.",
                                               self.dir, "Text files (*.txt *.csv)")
         self.saveFile = saveDlg[0] or None
         if self.saveFile is not None:
-            self.saveResults(self.classifications)
+            self.saveClassifications(self.classifications)
+
+    def saveTiterDlg(self):
+        """
+        file dialog to choose file to save titers
+        """
+        if any(classification is None for classification in self.classifications.values()):
+            self.showErrorMessageBox(
+                "Error",
+                "Missing classifications",
+                "Please classify all images before saving titers."
+            )
+            return
+
+        saveDlg = QFileDialog.getSaveFileName(self, "Select file to save titers.",
+                                              self.dir, "Text files (*.txt *.csv)")
+        self.saveFile = saveDlg[0] or None
+
+        if self.saveFile is not None:
+            self.saveTiters(self.get_titers())
 
     def chooseImgDirDlg(self):
         """
@@ -299,7 +319,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
             # this is to prevent the table from being loaded twice
             # when loading manual checks
             if load_manual_checks:
-                self.loadImgList(self.ui.tableWidget, self.imgList,
+                self.loadImgList(self.ui.tableWidget, self.imgFiles,
                                  list(self.classifications.values()))
             else:
                 self.loadImgList(self.ui.tableWidget, self.imgFiles)
@@ -375,7 +395,10 @@ class App(QMainWindow, FileHandling, ErrorHandling):
                 os.path.basename(imgFiles[row_nb])
             )[0]
 
-            label = str(labels[row_nb]) if labels[row_nb] is not None else ""
+            if labels[row_nb] is not None:
+                label = "infected" if labels[row_nb] == 1 else "not infected"
+            else:
+                label = ""
 
             tableWidget.insertRow(row_nb)
 
@@ -400,6 +423,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         """
         slot to open image in standard editor by double clicking item on list
         """
+        print(rowItem.row(), self.imgFiles[rowItem.row()])
         self.openImage(self.imgFiles[rowItem.row()])
 
     def addFilter(self):
@@ -488,11 +512,13 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         if self.trainParams.train_data_file is not None and self.trainParams.model_save_file is not None:
             # check if file exists
             if os.path.isfile(self.trainParams.model_save_file):
-                ans = self.askMessageBox(
-                    "Warning", "Model file already exists. Overwrite?"
+                improve = self.askImproveMessageBox(
+                    "Warning", "Model file already exists. Do you want to improve upon the existing model?"
                 )
-                if not ans:
+                if improve is None:
                     return
+
+            self.trainParams.train_mode = "transfer" if improve else "replace"
 
             # train model in seperate thread
             self.train_thread = TrainThread(self.trainParams)
@@ -553,11 +579,11 @@ class App(QMainWindow, FileHandling, ErrorHandling):
                 df = pd.read_csv(self.trainParams.train_data_file,
                                  sep=";", header=0)
                 self.loadImgList(self.ui.tableWidget_2,
-                                 df["files"].tolist(), df["labels"].tolist())
+                                 df["images"].tolist(), df["labels"].tolist())
             # TODO: add more specific error handling (e.g., wrong format, columns, etc.)
             except Exception as e:
                 self.showErrorMessageBox("Error", "Invalid file format.",
-                                         "File must be a .txt or .csv file with two columns: 'files' and 'labels'.")
+                                         "File must be a .txt or .csv file with two columns: 'images' and 'labels'.")
 
     def chooseTrainDataFile(self):
         """
@@ -609,7 +635,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.setModelSaveFile(str(saveDlg), update=True)
 
     ####################################
-    def automate(self):
+    def classify(self):
         """
         method to automate classification
         """
@@ -629,7 +655,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
                 serial_dilution,
                 initial_dilution,
                 particle_to_pfu,
-                self.load_manual_checks  # method to call when classifications is done
+                self.sort_manual_checks  # method to call when classifications is done
             )
 
             # start classification in seperate thread
@@ -644,17 +670,40 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         # update progress bar
         self.ui.progressBar.setValue(progress)
 
-    def load_manual_checks(self):
-        # load manual checks
-        self.classifications = self.classifyThread.classify.get_classifications()
-        self.imgList = list(self.classifications.keys())
+    def sort_manual_checks(self):
+        """
+        This methode is called when classification is done.
+        It sorts images such that non-classified images are displayed first.
+        """
+        # get sorted list of images
+        self.classifications = self.classifyThread.classify.get_unclassified_images()
+        self.imgFiles = list(self.classifications.keys())
         self.imgIndex = 0
 
-        # display first image
-        self.loadImgList(self.ui.tableWidget, self.imgList,
+        # reload list
+        self.loadImgList(self.ui.tableWidget, self.imgFiles,
                          list(self.classifications.values()))
 
+        # display first image
         self.initImageDisplay(load_manual_checks=True)
+
+    def get_titers(self):
+        """"""
+        manual_checks = self.classifyThread.classify.get_manual_checks()
+
+        manually_checked = dict()
+
+        # add manual checks to classifications
+        for image in manual_checks.keys():
+            row, col = manual_checks[image]
+            label = self.classifications[image]
+
+            manually_checked[image] = (row, col, label)
+
+        self.classifyThread.classify.set_manual_checks(manually_checked)
+        self.titers = self.classifyThread.classify.get_titers()
+
+        return self.titers
 
     ####################################
 
