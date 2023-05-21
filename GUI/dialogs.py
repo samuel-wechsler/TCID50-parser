@@ -164,6 +164,7 @@ class ClassUploadDlg(QDialog):
 
 class AutomateDlg(QDialog):
     """ Dialog to configure automated classification. """
+    # TODO: check that required fields are filled in
 
     def __init__(self):
         super(AutomateDlg, self).__init__()
@@ -231,85 +232,16 @@ class AutomateDlg(QDialog):
                 self.col_range.append(int(c))
 
     def setSerialDilution(self):
-        self.serial_dilution = np.log(int(self.ui.serial_dilution.text()))
+        self.serial_dilution = int(self.ui.serial_dilution.text())
 
     def setInitialDilution(self):
-        self.initial_dilution = -np.log(int(self.ui.initial_dilution.text()))
+        self.initial_dilution = int(self.ui.initial_dilution.text())
 
     def setParticlesToPfu(self):
-        self.part_pfu = self.ui.part_pfu.text()
+        self.part_pfu = int(self.ui.part_pfu.text())
 
     def getParams(self):
         return (self.model_path,
                 self.row_range, self.col_range,
                 self.serial_dilution, self.initial_dilution,
                 self.part_pfu)
-
-
-class TrainParamsDlg(QDialog):
-    """ Dialog to configure training parameters. """
-
-    def __init__(self):
-        super(TrainParamsDlg, self).__init__()
-        self.ui = TrainParamsUi()
-        self.ui.setupUi(self)
-
-        # set variables
-        self.epochs = 12
-        self.batch_size = 32
-        self.learning_rate = 0.001
-        self.optimizer = "adam"
-        self.validation_split = 0.2
-        self.rotation = np.pi / 4
-        self.metrics = ["accuracy"]
-
-        self._connectWidgets()
-
-    def _connectWidgets(self):
-        """ Connect all widgets to their respective methods. """
-        # Connect QSpinBoxes
-        self.ui.epochs.valueChanged.connect(self.setEpochs)
-        self.ui.batch_size.valueChanged.connect(self.setBatchSize)
-        self.ui.learning_rate.valueChanged.connect(self.setLearningRate)
-        self.ui.validation_split.valueChanged.connect(self.setValidationSplit)
-        self.ui.rotation.valueChanged.connect(self.setRotation)
-
-        # Connect QComboBoxes
-        self.ui.optimizer.currentIndexChanged.connect(self.setOptimizer)
-
-        # Connect QCheckBoxes
-        self.ui.accuracy.stateChanged.connect(self.setMetrics)
-        self.ui.precision.stateChanged.connect(self.setMetrics)
-        self.ui.recall.stateChanged.connect(self.setMetrics)
-
-    def setEpochs(self):
-        self.epochs = int(self.ui.epochs.value())
-
-    def setBatchSize(self):
-        self.batch_size = int(self.ui.batch_size.value())
-
-    def setLearningRate(self):
-        self.learning_rate = float(self.ui.learning_rate.value())
-
-    def setOptimizer(self):
-        self.optimizer = self.ui.optimizer.currentText()
-
-    def setValidationSplit(self):
-        self.validation_split = float(self.ui.validation_split.value())
-
-    def setRotation(self):
-        self.rotation = int(self.ui.rotation.value())
-
-    def setMetrics(self):
-        self.metrics = []
-        if self.ui.accuracy.isChecked():
-            self.metrics.append("accuracy")
-        if self.ui.precision.isChecked():
-            self.metrics.append("precision")
-        if self.ui.recall.isChecked():
-            self.metrics.append("recall")
-
-    def getParams(self):
-        return (self.epochs, self.batch_size, self.learning_rate,
-                self.optimizer, self.validation_split, self.rotation,
-                self.metrics)
