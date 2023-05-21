@@ -89,6 +89,19 @@ class Train:
 
         return class_weights
 
+    def check_class_imbalance(self):
+        # Read the CSV file containing the training data
+        df = self.get_class_dataframe()
+
+        # Get the counts for each class
+        counts = df['labels'].value_counts()
+
+        # Calculate the class imbalance ratio
+        imbalance_ratio = counts.min() / counts.max()
+
+        # Print the class imbalance ratio
+        print(f"Class imbalance ratio: {imbalance_ratio:0.2f}")
+
     def get_optimizer(self):
         if self.train_params.optimizer == "RMSprop":
             return RMSprop(learning_rate=self.train_params.learning_rate)
