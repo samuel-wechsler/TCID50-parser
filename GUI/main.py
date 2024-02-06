@@ -16,7 +16,7 @@ from PyQt5.QtCore import *
 import qdarktheme
 
 # extend sys.path to include python files from this dir
-sys.path.append(os.path.dirname(os.path.realpath(__file__)))  # noqa)
+sys.path.append(os.path.dirname(os.path.realpath(__file__)))  # noqa
 
 from filehandling import FileHandling
 from errorhandling import ErrorHandling
@@ -43,7 +43,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self._connectLineEdit()
         self._connectSpinBox()
         self._connectComboBox()
-        self._connectCheckBox()
 
         # set shortcuts
         self.setShortcuts()
@@ -57,6 +56,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.imgIndex = 0
         self.imgFiles = []
         self.classifications = dict()
+        self.saved_classifications = True
 
         self.trainParams = TrainParams(None, None)
 
@@ -117,12 +117,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         # Connect QComboBoxes
         self.ui.optimizers.currentIndexChanged.connect(self.setOptimizer)
 
-    def _connectCheckBox(self):
-        # Connect QCheckBoxes
-        self.ui.accuracy.stateChanged.connect(self.setMetrics)
-        self.ui.precision.stateChanged.connect(self.setMetrics)
-        self.ui.recall.stateChanged.connect(self.setMetrics)
-
     def setShortcuts(self):
         """
         Parse and set shortcuts for pushButton trigger events from config file,
@@ -174,6 +168,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.saveFile = saveDlg[0] or None
         if self.saveFile is not None:
             self.saveClassifications(self.classifications)
+            self.saved_classifications = True
 
     def saveTiterDlg(self):
         """
@@ -371,6 +366,9 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.updateImgList(infected)
         self.nextImage(1)
 
+        # mark unsaved changes
+        self.saved_classifications = False
+
     def redoClassification(self):
         """
         undo classification
@@ -380,29 +378,25 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         self.classifications.pop(self.imgFiles[self.imgIndex])
 
     def nextImage(self, move, scrollTop=True):
+        """
+        this method moves to the next or previous image, given..
+        - move (int): specifies positions to move forward or back (typically -1 or 1)
+        """
         self.imgIndex += move
 
-        if scrollTop:
-            # scroll to item in list
-            self.scrollToCurrent()
-
-        # display next image
-        self.displayImage(self.imgFiles[self.imgIndex])
-
-        # disable redo button if no classifications have been made
-        if self.imgFiles[self.imgIndex] not in self.classifications.keys():
-            self.setRedoButtonState(False)
-        else:
-            self.setRedoButtonState(True)
-
         # disable classify buttons if index out of list range
-        if self.imgIndex == 0:
-            self.setRedoButtonState(False)
-
-        elif self.imgIndex == len(self.imgFiles):
+        if self.imgIndex == len(self.imgFiles):
             self.setInfButtonState(False)
+
         else:
             self.setInfButtonState(True)
+
+            if scrollTop:
+                # scroll to item in list
+                self.scrollToCurrent()
+
+            # display next image
+            self.displayImage(self.imgFiles[self.imgIndex])
 
     #####################################
 
@@ -591,15 +585,6 @@ class App(QMainWindow, FileHandling, ErrorHandling):
     def setVerticalFlip(self):
         self.trainParams.vert_flip = self.ui.vertical_flip.isChecked()
 
-    def setMetrics(self):
-        self.trainParams.metrics = []
-        if self.ui.accuracy.isChecked():
-            self.trainParams.metrics.append("accuracy")
-        if self.ui.precision.isChecked():
-            self.trainParams.metrics.append("precision")
-        if self.ui.recall.isChecked():
-            self.trainParams.metrics.append("recall")
-
     def setTrainDataFile(self, path):
         """
         Load training data from file and display in table widget.
@@ -743,7 +728,7 @@ class App(QMainWindow, FileHandling, ErrorHandling):
         """
         Quit application gracefully.
         """
-        if len(self.classifications) > 0:
+        if len(self.classifications) > 0 and not self.saved_classifications:
             reply = QMessageBox.question(
                 self, 'Messag', "Unsaved changes. Are you sure you want to quit?",
                 QMessageBox.Yes | QMessageBox.No
