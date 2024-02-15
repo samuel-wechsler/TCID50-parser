@@ -70,10 +70,6 @@ image2.png;0
 `````
 Then specify training parameters, click onto the "Train" button. The program will train a convolutional neural network using the specified parameters and save the model to whichever directory you specify.
 
-
-## How to contribute
-If you found an issue or would like to submit an improvement, please submit an issue using the issue tab. If you would like to submit a pull request with a fix or improvement, please reference the issue you created!
-
 ## Known issues (Work in progress)
 * The program doesn't yet support uploading image data or classifications thereof as well as model architectures.
 
